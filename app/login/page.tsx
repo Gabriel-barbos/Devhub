@@ -1,11 +1,9 @@
-import LoginForm from "@/components/login-form";
-import { ThemeToogle } from "@/components/theme-toogle";
+import LoginForm from "@/components/login-page/login-form";
 
 export default function Page() {
   return (
-    <main className="flex items-center p-24">
-      <ThemeToogle></ThemeToogle>
+    <div className="flex flex-col items-center justify-center h-screen px-5">
       <LoginForm></LoginForm>
-    </main>
+    </div>
   );
 }
