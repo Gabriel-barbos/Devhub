@@ -1,10 +1,9 @@
-
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
+import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+
 
 
 const formSchema = z.object({
@@ -30,6 +30,7 @@ const formSchema = z.object({
 
 export function ProfileForm() {
   // ...
+  const {toast} = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,7 +95,13 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Enviar</Button>
+        <Button type="submit" onClick={() => {
+                    toast({
+                        title: "Concluído",
+                        description: "Formulário enviado!",
+                    })
+                }}
+        >Enviar</Button>
       </form>
     </Form>
   )
