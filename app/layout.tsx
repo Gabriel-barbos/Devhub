@@ -19,7 +19,7 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <nav className="absolute">
+        <nav className="absolute p-2">
         <NavigationMenuDemo />
         </nav>
         {children}
