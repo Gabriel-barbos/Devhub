@@ -3,6 +3,7 @@ import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card }
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { ForgetPasswordDialog } from "./forget-password-dialog"
 
 export default function LoginForm() {
   return (
