@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-br" suppressHydrationWarning>
       <body className={inter.className}><ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -21,7 +21,7 @@ export default function RootLayout({
         disableTransitionOnChange
       >
         <nav className="absolute p-2">
-        <NavigationMenuDemo />
+        {/* <NavigationMenuDemo /> */}
         </nav>
         {children}
         <Toaster />
