@@ -8,9 +8,9 @@ const ProfileHeader = () => {
             <div className={"flex items-center w-full justify-between"}>
                 <div className={"flex items-center gap-4"}>
                     <div>
-                        <Avatar>
+                        <Avatar className="hidden h-20 w-20 sm:flex">
                             {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                            <AvatarFallback>GM</AvatarFallback>
+                            <AvatarFallback className="text-2xl">GM</AvatarFallback>
                         </Avatar>
                     </div>
                     <div>

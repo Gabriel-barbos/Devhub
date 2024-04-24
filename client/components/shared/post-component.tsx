@@ -28,7 +28,7 @@ const Post = () => {
         <Card>
             <CardHeader className="flex items-center flex-row justify-between">
                 <div className="flex items-center gap-2">
-                    <Avatar>
+                    <Avatar className="hidden h-9 w-9 sm:flex">
                         {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
                         <AvatarFallback>GM</AvatarFallback>
                     </Avatar>
