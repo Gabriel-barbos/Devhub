@@ -15,7 +15,7 @@ const ProfileHeader = () => {
                     </div>
                     <div>
                         <div className="flex items-center gap-4">
-                            <h1 className={"text-3xl font-semibold"}>Gabriel Meira</h1>
+                            <h1 className={"text-xl font-semibold"}>Gabriel Meira</h1>
                             <div className="flex gap-1">
                                 <Badge variant={"outline"}>HTML</Badge>
                                 <Badge variant={"outline"}>CSS</Badge>
@@ -30,7 +30,7 @@ const ProfileHeader = () => {
                 </div>
             </div>
             <div className="mt-6 mb-8">
-                <p className="text-lg">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Adipisci, aspernatur.</p>
+                <p className="text-base">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Adipisci, aspernatur.</p>
             </div>
       </>
     );
