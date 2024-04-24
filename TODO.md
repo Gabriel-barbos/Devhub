@@ -12,6 +12,7 @@
 # Pefil
 - [ ]	nome de exibição 
 - [ ]	bio
+- [ ]   tecnologias
 - [ ]	username
 - [ ]	seguidores
 - [ ] seguindo
