@@ -34,7 +34,7 @@ export default function LoginForm() {
               <Input id="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
-              Login
+              Entrar
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
