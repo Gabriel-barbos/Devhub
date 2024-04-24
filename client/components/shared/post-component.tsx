@@ -32,18 +32,18 @@ const Post = () => {
                         {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
                         <AvatarFallback>GM</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-lg leading-7 tracking-tight">@gabrielmeira</CardTitle>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@gabrielmeira</CardTitle>
                 </div>
                 <CardDescription>Agora</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Esse é o primeiro post</p>
+                <p className="text-base">Esse é o primeiro post</p>
             </CardContent>
             <CardFooter className="flex items-center gap-4"> 
-                <Button variant={liked ? "secondary" : "outline"} onClick={like}>
+                <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
                     <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
                 </Button> 
-                <p className={"text-muted-foreground"}>{likes} like{likes > 1 && "s"}</p>
+                <p className={"text-muted-foreground text-sm"}>{likes} like{likes > 1 && "s"}</p>
             </CardFooter>
         </Card>
     )
