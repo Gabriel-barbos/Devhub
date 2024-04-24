@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ForgetPasswordDialog } from "@/components/login-page/forget-password-dialog"
 import Link from "next/link"
+import ForgetPasswordOtp from "./forget-password-otp"
+
 export default function LoginForm() {
   return (
     <div className="w-full lg:grid lg:min-h-[600px]  xl:min-h-[800px]">
@@ -36,6 +38,8 @@ export default function LoginForm() {
             <Button type="submit" className="w-full">
               Entrar
             </Button>
+
+            <ForgetPasswordOtp />
           </div>
           <div className="mt-4 text-center text-sm">
             Não tem uma conta? {"  "}
