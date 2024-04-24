@@ -51,8 +51,10 @@ def get_one_user(id: str):
          raise error
 
 
+# avatar: UploadFile = File(...)
+
 @router.post("/user/register")
-def register_user(user: User,avatar: UploadFile = File(...)):
+def register_user(user: User):
     try:
         # hashing password
         user.password = hash(user.password)
