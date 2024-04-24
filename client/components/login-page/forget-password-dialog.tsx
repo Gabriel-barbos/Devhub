@@ -4,6 +4,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useMediaQuery } from "usehooks-ts"
 import { Button } from "@/components/ui/button"
+import { useToast } from "../ui/use-toast"
 import {
   Dialog,
   DialogContent,
@@ -52,10 +53,13 @@ export function ForgetPasswordDialog() {
         <DrawerHeader className="text-left">
           <DrawerTitle>Insira seu email para recuperar sua senha</DrawerTitle>
         </DrawerHeader>
+        <div>
+
+        </div>
         <ForgetPasswordForm className="px-4" />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="destructive">Cancel</Button>
+            <Button variant="destructive" className="w-full">Cancelar</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -68,9 +72,13 @@ function ForgetPasswordForm({ className }: React.ComponentProps<"form">) {
     <form className={cn("grid items-start gap-4", className)}>
     <div className="grid gap-2">
       <Label htmlFor="email">Email</Label>
-      <Input type="email" id="email" defaultValue="exemplo@email.com" />
+      <Input type="email" id="email" defaultValue="" placeholder="exemplo@email.com"/>
     </div>
-    <Button type="submit">Enviar</Button>
+    <div className="w-full flex justify-center">
+      <Button type="submit" className="w-full md:w-[100px]">
+        Enviar
+      </Button>
+    </div>
   </form>
   )
 }

@@ -9,7 +9,7 @@ import ForgetPasswordOtp from "./forget-password-otp"
 
 export default function LoginForm() {
   return (
-    <div className="w-full lg:grid lg:min-h-[600px]  xl:min-h-[800px]">
+    <div className="w-full py-12">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
@@ -24,7 +24,6 @@ export default function LoginForm() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@exemplo.com"
                 required
               />
             </div>
@@ -35,11 +34,11 @@ export default function LoginForm() {
               </div>
               <Input id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
+            <div className="w-full flex justify-center">
+            <Button type="submit" className="w-[100px]">
               Entrar
             </Button>
-
-            <ForgetPasswordOtp />
+            </div>
           </div>
           <div className="mt-4 text-center text-sm">
             Não tem uma conta? {"  "}

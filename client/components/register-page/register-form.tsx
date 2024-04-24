@@ -20,14 +20,14 @@ import { error } from "console"
 
 
 const User = z.object({
-  name: z.string(),
+  name: z.string().min(1,{message: "Nome de exibição precisa de no mínimo 1 caractere."}),
   username: z.string().min(1, {
     message: "Nome de usuário precisa de no mínimo 1 caractere.",
   }),
   password: z.string().min(6, {
     message: "Senha precisa de ao menos 6 caracteres.",
   }),
-  email: z.string().email({message: "Email inválido"}),
+  email: z.string().email({message: "Email inválido."}),
 })
 
 export function RegisterForm() {
@@ -79,7 +79,7 @@ export function RegisterForm() {
                 <Input placeholder="" {...field} />
               </FormControl>
               <FormDescription>
-                Esse será seu nome de usuário
+                Esse será seu nome de usuário. Ele será único.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -117,8 +117,11 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit"
-        >Enviar</Button>
+        <div className="w-full flex justify-center">
+            <Button type="submit" className="w-[100px]">
+              Entrar
+            </Button>
+        </div>
       </form>
     </Form>
   )
