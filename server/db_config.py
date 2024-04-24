@@ -1,11 +1,4 @@
-# def create_server_connection(connection_string, db_name, collection_name):
-#    client = MongoClient(connection_string)
-#    return client[db_name][collection_name]
 
-# connection = create_server_connection("mongodb://localhost:27017", "devhub", "user");
-
-
-# userCollection = connection['user']
 from env_variables import DBCONNECTIONSTRING
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi

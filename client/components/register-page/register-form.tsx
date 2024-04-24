@@ -15,24 +15,26 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { error } from "console"
 
 
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+const User = z.object({
+  name: z.string().min(1,{message: "Nome de exibição precisa de no mínimo 1 caractere."}),
+  username: z.string().min(1, {
+    message: "Nome de usuário precisa de no mínimo 1 caractere.",
   }),
   password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
+    message: "Senha precisa de ao menos 6 caracteres.",
   }),
-  email: z.string()
+  email: z.string().email({message: "Email inválido."}),
 })
 
-export function ProfileForm() {
+export function RegisterForm() {
   // ...
   const {toast} = useToast()
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof User>>({
+    resolver: zodResolver(User),
     defaultValues: {
       username: "",
       password: "",
@@ -40,13 +42,33 @@ export function ProfileForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = (values: z.infer<typeof User>) => {
+    toast({
+    title: "Sucesso!",
+    description: "Você foi cadastrado!",
+  })
     console.log(values)
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <Form  {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto space-y-5">
+      <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome de exibição</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormDescription>
+                Esse será seu nome público
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="username"
@@ -57,7 +79,7 @@ export function ProfileForm() {
                 <Input placeholder="" {...field} />
               </FormControl>
               <FormDescription>
-                Esse será seu nome público
+                Esse será seu nome de usuário. Ele será único.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -86,7 +108,7 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input placeholder="senha" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
               <FormDescription>
                 Insira uma senha segura.
@@ -95,13 +117,11 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" onClick={() => {
-                    toast({
-                        title: "Concluído",
-                        description: "Formulário enviado!",
-                    })
-                }}
-        >Enviar</Button>
+        <div className="w-full flex justify-center">
+            <Button type="submit" className="w-[100px]">
+              Entrar
+            </Button>
+        </div>
       </form>
     </Form>
   )
