@@ -28,7 +28,7 @@ const formSchema = z.object({
   email: z.string()
 })
 
-export function ProfileForm() {
+export function RegisterForm() {
   // ...
   const {toast} = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -45,8 +45,8 @@ export function ProfileForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <Form  {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto space-y-5">
         <FormField
           control={form.control}
           name="username"

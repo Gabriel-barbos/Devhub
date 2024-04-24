@@ -3,29 +3,49 @@ import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card }
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ForgetPasswordDialog } from "./forget-password-dialog"
-
+import { ForgetPasswordDialog } from "@/components/login-page/forget-password-dialog"
+import Link from "next/link"
 export default function LoginForm() {
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-transparent border-transparent">
-      <CardHeader className="space-y-2">
-        <CardTitle className="text-2xl dark:text-slate-50">Login</CardTitle>
-        <CardDescription className="dark:text-slate-50"></CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="space-y-3">
-          <Label htmlFor="email" className="dark:text-slate-50"></Label>
-          <Input id="email" placeholder="Insira seu email ou username para logar na sua conta." required type="email" />
+    <div className="w-full lg:grid lg:min-h-[600px]  xl:min-h-[800px]">
+      <div className="flex items-center justify-center py-12">
+        <div className="mx-auto grid w-[350px] gap-6">
+          <div className="grid gap-2 text-center">
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-balance text-muted-foreground">
+              Insira seu email abaixo para entrar na sua conta
+            </p>
+          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@exemplo.com"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Senha</Label>
+                <ForgetPasswordDialog  />
+              </div>
+              <Input id="password" type="password" required />
+            </div>
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            Não tem uma conta? {"  "}
+            <Link href="/register" className="underline">
+              Registrar
+            </Link>
+          </div>
         </div>
-        <div className="space-y-3">
-          <Label htmlFor="password"  className="dark:text-slate-50">Senha</Label>
-          <Input id="password" required type="password" />
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full dark:text-slate-800">Entrar</Button>
-      </CardFooter>
-    </Card>
+      </div>
+         </div>
   )
 }
 
