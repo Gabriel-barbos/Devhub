@@ -1,6 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+import random
+from fastapi import APIRouter
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import FileResponse
 import os
+app = FastAPI()
 
 from models.User import User
 from db_config import usersCollection
@@ -17,26 +20,27 @@ def get_all_users():
     return {"todos os usuarios": "eu"}
 
 @router.post("/user")
-def create_user(user: User):
+def create_user(user: User, avatar: UploadFile = File(...)):
     usersCollection.insert_one(dict(user))
+    
     return {user.model_dump_json()}
 
 # rotas imagens:
 IMAGES_DIRECTORY = "imagens"
 
-@app.post("/upload/")
 async def upload_image(file: UploadFile = File(...)):
     if not os.path.exists(IMAGES_DIRECTORY):
         os.makedirs(IMAGES_DIRECTORY)
 
-        file_path = os.path.join(IMAGES_DIRECCTORY, file.filename)
-        with open(file_path, "wb") as image:
-            image.writer(await file.read())
-            
-        return {"filename": file.filename}
-    
+    filename = f"{random.randint(373, 373773)}{random.randint(373, 373773)}{file.filename}"
 
-@app.get("/images/{filename}")
+    file_path = os.path.join(IMAGES_DIRECTORY, filename)
+    with open(file_path, "wb") as image:
+        image.write(await file.read())
+
+    return filename
+
+@router.get("/images/{filename}")
 async def get_image(filename: str):
     file_path = os.path.join(IMAGES_DIRECTORY, filename)
     if os.path.exists(file_path):
@@ -44,11 +48,11 @@ async def get_image(filename: str):
     else:
         raise HTTPException(status_code=404, detail="Imagem não encontrada")
 
-@app.delete("/images/{filename}")
+@router.delete("/images/{filename}")
 async def delete_image(filename: str):
     file_path = os.path.join(IMAGES_DIRECTORY, filename)
     if os.path.exists(file_path):
         os.remove(file_path)
-        return {"message": f"Imagem {filename} excluída com sucesso."}
+        return {"menssagem": f"Imagem {filename} excluída com sucesso."}
     else:
-        raise HTTPException(status_code=404, detail="Imagem não encontrada")   
+        raise HTTPException(status_code=404, detail="Imagem não encontrada")
