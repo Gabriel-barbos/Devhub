@@ -1,15 +1,20 @@
 
-from fastapi import APIRouter, HTTPException, Response,FastAPI, File, UploadFile
+from fastapi import APIRouter, HTTPException, Response,FastAPI, File, UploadFile, Depends
+from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from models.User import User, UserLogin
 from env_variables import hash
 
 from db_config import usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
+from controllers.UserController import UserController
+
 
 import random
 from fastapi.responses import FileResponse
 import os
+import hashlib
+
 app = FastAPI()
 
 
@@ -78,31 +83,34 @@ def delete_user(id:str):
      return {"message": "Usuário deletado com sucesso!"}
 
 @router.post('/login')
-def login(user_credentials: UserLogin):
-    query = {"$and": [{"email": user_credentials.email}, {"password": user_credentials.password}, "limit:1"]}
-    doc = usersCollection.find(query)
-    print(doc)
-    return {"data": doc}
+def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
+   user = usersCollection.find_one({'email':user_credentials.username})
+   if user:
+       if user['password'] == hash(user_credentials.password):
+           acess_token = UserController.create_acess_token(data={"user_email": user['email']})
+           return {"logado": acess_token,"token_type": "bearer"}
+       return {"erro": "ao realizar login"}
   
   
   
 # rotas imagens:
 IMAGES_DIRECTORY = "imagens"
-
-async def upload_image(file: UploadFile = File(...)):
+@router.put("/images/update")
+async def upload_image(file: UploadFile = File(...), current_user: str = Depends(UserController.get_current_user)):
     if not os.path.exists(IMAGES_DIRECTORY):
         os.makedirs(IMAGES_DIRECTORY)
-
+    
     filename = f"{random.randint(373, 373773)}{random.randint(373, 373773)}{file.filename}"
 
     file_path = os.path.join(IMAGES_DIRECTORY, filename)
     with open(file_path, "wb") as image:
         image.write(await file.read())
 
+    insert = usersCollection.find_one_and_update({'email': current_user['email']},{"$set": {'imagePath':filename}})
     return filename
 
 @router.get("/images/{filename}")
-async def get_image(filename: str):
+async def get_image(filename: str,current_user: str = Depends(UserController.get_current_user)):
     file_path = os.path.join(IMAGES_DIRECTORY, filename)
     if os.path.exists(file_path):
         return FileResponse(file_path)
