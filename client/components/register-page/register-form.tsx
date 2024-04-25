@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -15,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { error } from "console"
 
 
 
@@ -30,24 +30,37 @@ const User = z.object({
   email: z.string().email({message: "Email inválido."}),
 })
 
+
 export function RegisterForm() {
   // ...
   const {toast} = useToast()
   const form = useForm<z.infer<typeof User>>({
     resolver: zodResolver(User),
     defaultValues: {
+      name: "",
       username: "",
       password: "",
       email: ""
     },
   })
 
-  const onSubmit = (values: z.infer<typeof User>) => {
+
+  const onSubmit = async (values: z.infer<typeof User>) => {
     toast({
     title: "Sucesso!",
     description: "Você foi cadastrado!",
   })
+  try {
+    User.parse(values)
+    const response = await fetch("http://localhost:8000/user/register",{
+    method: "POST",
+    headers: { "Content-Type": "application/json"},
+    body: JSON.stringify(values)
+    })
     console.log(values)
+    } catch(error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -119,7 +132,7 @@ export function RegisterForm() {
         />
         <div className="w-full flex justify-center">
             <Button type="submit" className="w-[100px]">
-              Entrar
+              Enviar
             </Button>
         </div>
       </form>

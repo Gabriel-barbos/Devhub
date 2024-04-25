@@ -66,6 +66,7 @@ def register_user(user: User):
     except HTTPException(status_code=500, detail="Ocorreu um erro ao registrar usuário") as error:
         raise error
 
+
 @router.put("/user/update/{id}")
 def update_user(id: str, user: User):
         usersCollection.find_one_and_update({"_id":ObjectId(id)}, {"$set" : dict(user)})

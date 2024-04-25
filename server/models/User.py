@@ -7,8 +7,8 @@ class User (BaseModel):
     name: str
     email: EmailStr
     password: str
-    imagePath: Optional[str]
-    bio: Optional[str]
+    imagePath: Optional[str]=None
+    bio: Optional[str]=None
 
 class UserLogin(BaseModel):
     email: EmailStr
