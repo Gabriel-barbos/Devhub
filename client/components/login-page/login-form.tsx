@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Label } from "@/components/ui/label"
 import { ForgetPasswordDialog } from "@/components/login-page/forget-password-dialog"
 import Link from "next/link"
@@ -25,6 +27,8 @@ const UserLogin = z.object({
 })
 
 export function LoginForm() {
+  const router = useRouter()
+  const [formSubmitted, setFormSubmitted] = useState(false)
   const form = useForm<z.infer<typeof UserLogin>>({
     resolver: zodResolver(UserLogin),
     defaultValues: {
@@ -32,7 +36,7 @@ export function LoginForm() {
       password: ""
     },
   })
-
+  
 
   const onSubmit = async (values: z.infer<typeof UserLogin>) => {
     try {
@@ -46,7 +50,17 @@ export function LoginForm() {
     } catch (error) {
       console.log(error)
     }
+    setFormSubmitted(true)
   }
+
+  useEffect(() => {
+    if (formSubmitted) {
+      const timeoutId: any = setTimeout(() => {
+        router.push('/profile');
+      }, 1000);
+      return () => clearTimeout(timeoutId)
+    }
+  }, [formSubmitted, router])
 
   return (
     <Form  {...form}>
@@ -61,7 +75,7 @@ export function LoginForm() {
               <Input placeholder="" {...field} />
             </FormControl>
             <FormDescription>
-              Insira seu mail
+              Insira seu email
             </FormDescription>
             <FormMessage />
           </FormItem>

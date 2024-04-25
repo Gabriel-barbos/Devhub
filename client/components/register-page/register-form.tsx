@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { any, z } from "zod"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,9 +22,7 @@ import { Input } from "@/components/ui/input"
 
 const User = z.object({
   name: z.string().min(1,{message: "Nome de exibição precisa de no mínimo 1 caractere."}),
-  username: z.string().min(1, {
-    message: "Nome de usuário precisa de no mínimo 1 caractere.",
-  }),
+  username: z.string().email({message: "Insira um nome de usuário válido"}),
   password: z.string().min(6, {
     message: "Senha precisa de ao menos 6 caracteres.",
   }),
@@ -34,6 +33,8 @@ const User = z.object({
 export function RegisterForm() {
   // ...
   const {toast} = useToast()
+  const router = useRouter()
+  const [formSubmitted, setFormSubmitted] = useState(false)
   const form = useForm<z.infer<typeof User>>({
     resolver: zodResolver(User),
     defaultValues: {
@@ -48,7 +49,7 @@ export function RegisterForm() {
   const onSubmit = async (values: z.infer<typeof User>) => {
     toast({
     title: "Sucesso!",
-    description: "Você foi cadastrado!",
+    description: "Você foi logado!",
   })
   try {
     User.parse(values)
@@ -61,7 +62,17 @@ export function RegisterForm() {
     } catch(error) {
       console.log(error)
     }
+    setFormSubmitted(true)
   }
+
+  useEffect(() => {
+    if (formSubmitted) {
+      const timeoutId: any = setTimeout(() => {
+        router.push('/login');
+      }, 1000);
+      return () => clearTimeout(timeoutId)
+    }
+  }, [formSubmitted, router])
 
   return (
     <Form  {...form}>
