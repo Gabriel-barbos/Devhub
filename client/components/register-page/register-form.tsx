@@ -22,9 +22,7 @@ import { Input } from "@/components/ui/input"
 
 const User = z.object({
   name: z.string().min(1,{message: "Nome de exibição precisa de no mínimo 1 caractere."}),
-  username: z.string().min(1, {
-    message: "Nome de usuário precisa de no mínimo 1 caractere.",
-  }),
+  username: z.string().email({message: "Insira um nome de usuário válido"}),
   password: z.string().min(6, {
     message: "Senha precisa de ao menos 6 caracteres.",
   }),
@@ -51,7 +49,7 @@ export function RegisterForm() {
   const onSubmit = async (values: z.infer<typeof User>) => {
     toast({
     title: "Sucesso!",
-    description: "Você foi cadastrado!",
+    description: "Você foi logado!",
   })
   try {
     User.parse(values)
@@ -69,15 +67,12 @@ export function RegisterForm() {
 
   useEffect(() => {
     if (formSubmitted) {
-      // After 2 seconds, redirect the user to another page
       const timeoutId: any = setTimeout(() => {
         router.push('/login');
-      }, 2000);
-
-      // Clean up the timeout
-      return () => clearTimeout(timeoutId);
+      }, 1000);
+      return () => clearTimeout(timeoutId)
     }
-  }, [formSubmitted, router]);
+  }, [formSubmitted, router])
 
   return (
     <Form  {...form}>
