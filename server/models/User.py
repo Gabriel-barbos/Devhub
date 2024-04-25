@@ -3,12 +3,12 @@ from pydantic import BaseModel, EmailStr
 
 
 class User (BaseModel):
-    username: str
+    username: EmailStr
     name: str
     email: EmailStr
     password: str
-    imagePath: Optional[str]
-    bio: Optional[str]
+    imagePath: Optional[str] = None
+    bio: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
