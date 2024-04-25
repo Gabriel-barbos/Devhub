@@ -83,14 +83,18 @@ def delete_user(id:str):
      return {"message": "Usuário deletado com sucesso!"}
 
 @router.post('/login')
-def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
+def login(user_credentials: UserLogin):
    try:
+    
     user = usersCollection.find_one({'email':user_credentials.username})
+
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Informações inválidas")
+    
     if user['password'] == hash(user_credentials.password):
         acess_token = UserController.create_acess_token(data={"user_email": user['email']})
         return {"logado": acess_token,"token_type": "bearer"}
+    
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
    except HTTPException as error:
        raise error

@@ -11,7 +11,7 @@ class User (BaseModel):
     bio: Optional[str] = None
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    username: EmailStr
     password: str
 
 class Token(BaseModel):
