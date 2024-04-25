@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, HTTPException, Response,FastAPI, File, UploadFile, Depends
+from fastapi import APIRouter, HTTPException, Response,FastAPI, File, UploadFile, Depends, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from models.User import User, UserLogin
 from env_variables import hash
@@ -84,13 +84,16 @@ def delete_user(id:str):
 
 @router.post('/login')
 def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
-   user = usersCollection.find_one({'email':user_credentials.username})
-   if user:
-       if user['password'] == hash(user_credentials.password):
-           acess_token = UserController.create_acess_token(data={"user_email": user['email']})
-           return {"logado": acess_token,"token_type": "bearer"}
-       return {"erro": "ao realizar login"}
-  
+   try:
+    user = usersCollection.find_one({'email':user_credentials.username})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Informações inválidas")
+    if user['password'] == hash(user_credentials.password):
+        acess_token = UserController.create_acess_token(data={"user_email": user['email']})
+        return {"logado": acess_token,"token_type": "bearer"}
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
+   except HTTPException as error:
+       raise error
   
   
 # rotas imagens:
