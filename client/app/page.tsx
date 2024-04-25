@@ -1,4 +1,4 @@
-import { ThemeToogle } from "@/components/theme-toogle";
+import { ThemeToogle } from "@/components/theme-toggle";
 import { NavigationMenuDemo } from "@/components/navigation-menu";
 export default function Home() {
   return (

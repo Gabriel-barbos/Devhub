@@ -1,9 +1,9 @@
 const ProfileTabs = () => {
     return (
-    <div className="flex">
-        <a href="#" className={"flex-1 font-semibold text-lg"}>Posts</a>
-        <a href="#" className={"flex-1 text-center text-lg text-neutral-400"}>Artigos</a>
-        <a href="#" className={"flex-1 text-right text-lg text-neutral-400"}>Projetos</a>
+    <div className="flex sticky top-0 py-4 bg-gradient-to-b from-background to-transparent">
+        <a href="#" className={"flex-1 text-center font-semibold text-base"}>Posts</a>
+        <a href="#" className={"flex-1 text-center text-base text-neutral-400"}>Artigos</a>
+        <a href="#" className={"flex-1 text-center text-base text-neutral-400"}>Projetos</a>
     </div> )
 }
 
