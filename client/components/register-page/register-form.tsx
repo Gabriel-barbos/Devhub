@@ -50,8 +50,8 @@ export function RegisterForm() {
 
   const onSubmit = async (values: z.infer<typeof User>) => {
     toast({
-    title: "Sucesso!",
-    description: "Você foi logado!",
+    title: "Sucesso.",
+    description: "Você foi registrado!",
   })
   try {
     User.parse(values)
