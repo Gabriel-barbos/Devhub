@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { any, z } from "zod"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +35,8 @@ const User = z.object({
 export function RegisterForm() {
   // ...
   const {toast} = useToast()
+  const router = useRouter()
+  const [formSubmitted, setFormSubmitted] = useState(false)
   const form = useForm<z.infer<typeof User>>({
     resolver: zodResolver(User),
     defaultValues: {
@@ -61,7 +64,20 @@ export function RegisterForm() {
     } catch(error) {
       console.log(error)
     }
+    setFormSubmitted(true)
   }
+
+  useEffect(() => {
+    if (formSubmitted) {
+      // After 2 seconds, redirect the user to another page
+      const timeoutId: any = setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+
+      // Clean up the timeout
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formSubmitted, router]);
 
   return (
     <Form  {...form}>
