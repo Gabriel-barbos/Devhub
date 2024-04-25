@@ -22,40 +22,55 @@ import {
 import { Input } from "@/components/ui/input"
 
 const UserLogin = z.object({
-  email: z.string().email({message: "Email inválido"}),
+  username: z.string().email({message: "Email inválido"}),
   password: z.string(),
 })
 
 export function LoginForm() {
+  const {toast} = useToast()
   const router = useRouter()
   const [formSubmitted, setFormSubmitted] = useState(false)
   const form = useForm<z.infer<typeof UserLogin>>({
     resolver: zodResolver(UserLogin),
     defaultValues: {
-      email: "",
+      username: "",
       password: ""
     },
   })
   
+ 
 
   const onSubmit = async (values: z.infer<typeof UserLogin>) => {
+    const formData = new URLSearchParams()
+    formData.append('grant_type', '')
+    formData.append('username', values.username)
+    formData.append('password', values.password)
+    formData.append('scope', '')
+    formData.append('client_id', '')
+    formData.append('client_secret', '')
     try {
       UserLogin.parse(values)
       const response = await fetch("http://localhost:8000/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values)
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+        
       })  
       console.log(values)
-    } catch (error) {
-      console.log(error)
+      if(response.ok) setFormSubmitted(true)
+      if(response.status === 401) throw new Error('Senha inválida!')
+      if(response.status === 404) throw new Error('Conta não encontrada, verifique se seu email está escrito corretamente.')
+    } catch (error: any) {
+      toast({
+        title: "Erro!",
+        description: error.message,
+      })
     }
-    setFormSubmitted(true)
   }
 
   useEffect(() => {
     if (formSubmitted) {
-      const timeoutId: any = setTimeout(() => {
+      const timeoutId: any = setTimeout(() => { 
         router.push('/profile');
       }, 1000);
       return () => clearTimeout(timeoutId)
@@ -67,7 +82,7 @@ export function LoginForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto space-y-5">
       <FormField
         control={form.control}
-        name="email"
+        name="username"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Email</FormLabel>
