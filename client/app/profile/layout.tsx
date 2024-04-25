@@ -1,14 +1,14 @@
 
+import Sidebar from "@/components/shared/sidebar-component";
+
 export default function LayoutProfile({ children }: { children: React.ReactNode }){
     return (
-    <section className={"flex p-8 box-border"}>
+    <section className={"flex box-border items-start"}>
       <div className={"w-1/4 sticky top-0"}>
-        <div>
-          <h1 className="font-black text-6xl md:text-2xl dark:text-slate-50">devhub</h1>
-        </div>
+        <Sidebar />
       </div>
-      <div className={"flex-1"}>{children}</div>
-      <div className={"w-1/4"}></div>
+      <div className={"flex-1 p-8"}>{children}</div>
+      <div className={"w-1/4 p-8"}></div>
     </section>
     )
 }

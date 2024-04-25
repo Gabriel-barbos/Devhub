@@ -1,6 +1,6 @@
 "use client"
 
-import { ThemeToogle } from "./theme-toogle";
+import { ThemeToggle } from "./theme-toggle";
 import * as React from "react"
 import Link from "next/link"
 
@@ -41,7 +41,7 @@ export function NavigationMenuDemo() {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-        <ThemeToogle />
+        <ThemeToggle />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
