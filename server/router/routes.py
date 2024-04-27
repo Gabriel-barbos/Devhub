@@ -8,6 +8,7 @@ from db_config import usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
 from controllers.UserController import UserController
+from controllers.PerfilController import PerfilController
 
 
 import random
@@ -94,6 +95,14 @@ def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
    except HTTPException as error:
        raise error
+
+@router.post("/change-password")
+async def password_change(password_change: PerfilController.PasswordChange):
+    try:
+        email = await PerfilController.change_password(password_change)
+        return {"message": f"Senha alterada com sucesso para: {str(email)}"}
+    except HTTPException as error:
+       raise error
   
 # rotas imagens:
 IMAGES_DIRECTORY = "imagens"
@@ -124,6 +133,6 @@ async def delete_image(filename: str):
     file_path = os.path.join(IMAGES_DIRECTORY, filename)
     if os.path.exists(file_path):
         os.remove(file_path)
-        return {"menssagem": f"Imagem {filename} excluída com sucesso."}
+        return {"mensagem": f"Imagem {filename} excluída com sucesso."}
     else:
         raise HTTPException(status_code=404, detail="Imagem não encontrada")
