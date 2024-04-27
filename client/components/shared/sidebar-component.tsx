@@ -1,5 +1,6 @@
 import { User } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
+import EditButton from "./editbtn";
 
 const Sidebar = () => {
 
@@ -16,6 +17,8 @@ const Sidebar = () => {
           <div className="mt-auto block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
+              <EditButton></EditButton>
+         
             </div>
           </div>
         </div>
