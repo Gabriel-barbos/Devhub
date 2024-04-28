@@ -7,7 +7,7 @@ import { ForgetPasswordDialog } from "@/components/login-page/forget-password-di
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { any, z } from "zod"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,9 +27,19 @@ const UserLogin = z.object({
 })
 
 export function LoginForm() {
+  const token = sessionStorage.getItem("accessToken")
+
+  
   const {toast} = useToast()
   const router = useRouter()
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [accessToken, setAccessToken] = useState(() => {
+    if (typeof sessionStorage !== "undefined") {
+      return sessionStorage.getItem("accessToken") || ""
+    } else {
+      return ""
+    }
+  })
   const form = useForm<z.infer<typeof UserLogin>>({
     resolver: zodResolver(UserLogin),
     defaultValues: {
@@ -54,25 +64,33 @@ export function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
-        
-      })  
-      console.log(values)
-      if(response.ok) setFormSubmitted(true)
-      if(response.status === 401) throw new Error('Senha inválida!')
-      if(response.status === 404) throw new Error('Conta não encontrada, verifique se seu email está escrito corretamente.')
+      })
+        if(response.ok) {
+          const data = await response.json()
+          console.log(data)
+          setAccessToken(data.logado);
+          sessionStorage.setItem("accessToken", data.logado)
+          setFormSubmitted(true)
+        }
+        if(response.status === 401) throw new Error('Senha inválida!')
+        if(response.status === 404) throw new Error('Conta não encontrada, verifique se seu email está escrito corretamente.')
     } catch (error: any) {
       toast({
         title: "Erro!",
-        description: error.message,
+        description: error.message
       })
+      console.log(error)
     }
   }
 
   useEffect(() => {
+    if(token){
+      router.push('/profile')
+    }
     if (formSubmitted) {
       const timeoutId: any = setTimeout(() => { 
-        router.push('/profile');
-      }, 1000);
+        router.push('/profile')
+      }, 1000)
       return () => clearTimeout(timeoutId)
     }
   }, [formSubmitted, router])

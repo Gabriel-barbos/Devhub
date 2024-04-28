@@ -1,7 +1,8 @@
 import { User } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
 import EditButton from "./editbtn";
-
+import { Button } from "../ui/button";
+import Link from "next/link";
 const Sidebar = () => {
 
 
@@ -13,6 +14,9 @@ const Sidebar = () => {
                 <User />
                 Meu perfil
             </a>
+            <Button asChild>
+              <Link href="/logout">Sair</Link>
+            </Button>
           </div>
           <div className="mt-auto block">
             <div className="flex items-center space-x-2">

@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input"
 
 const User = z.object({
   name: z.string().min(1,{message: "Nome de exibição precisa de no mínimo 1 caractere."}),
-  username: z.string().email({message: "Insira um nome de usuário válido"}),
+  username: z.string().min(1, {message: "Nome de usuário precisa de no mínimo 1 caractere."}),
   password: z.string().min(6, {
     message: "Senha precisa de ao menos 6 caracteres.",
   }),
@@ -134,7 +134,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="" type="password" {...field} />
               </FormControl>
               <FormDescription>
                 Insira uma senha segura.
