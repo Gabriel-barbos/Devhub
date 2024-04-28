@@ -27,7 +27,7 @@ const UserLogin = z.object({
 })
 
 export function LoginForm() {
-  const token = sessionStorage.getItem("accessToken")
+  
 
   
   const {toast} = useToast()
@@ -85,6 +85,7 @@ export function LoginForm() {
   }
 
   useEffect(() => {
+    const token = sessionStorage.getItem("accessToken")
     if(token){
       router.push('/profile')
     }
