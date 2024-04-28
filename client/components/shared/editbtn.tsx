@@ -1,48 +1,104 @@
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Ellipsis } from "lucide-react";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Bolt, } from "lucide-react";
+import { Button } from "@/components/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
   
+const formSchema = z.object({
+    email: z.string(), 
+    password: z.string().min(8, {
+    message: "Sua senha precisa ter no mínimo 8 caracteres.",
+  }),
+
+})
 const EditButton = () => {
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    },
+  })
 
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    
+  console.log(values)
+  }
     return (
-     <>
-      
-        <Dialog>
+      <>
+ <Dialog>
   <DialogTrigger>
-                <Ellipsis  />
-
+  <Bolt />
   </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Edite as informações da sua conta</DialogTitle>
+      <DialogContent>
+        <DialogHeader>
+        <DialogTitle>Edite as informações da sua conta</DialogTitle>
+      
       <DialogDescription>
-      <div className="grid w-full max-w-sm items-center gap-1.5 mt-8">
-            <Label htmlFor="email">Altere seu Email</Label>
-            <Input type="Email" id="email" placeholder="Digite seu novo email" />
-         </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          
+          <FormField
+            control={form.control}
+            name ="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Altere seu Email</FormLabel>
+                <FormControl>
+                  <Input placeholder ="Digite seu novo email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+      
+      <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Altere sua senha</FormLabel>
+                <FormControl>
+                <Input placeholder ="Digite sua nova senha" {...field} />
+                </FormControl>
 
-         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6 pb-6">
-            <Label htmlFor="email">Altere sua senha</Label>
-            <Input type="string" id="senha" placeholder="Digite sua nova senha" />
-         </div>
-         <Button>Salvar Alterações</Button>
-         <Button  variant="destructive" className="ml-4">Desativar conta</Button>
+                <FormMessage />
+              </FormItem>
+            )}
+      ></FormField>
+      
+      <Button>Salvar Alterações</Button>
+      <Button  variant="destructive" className="ml-4">Desativar conta</Button>        </form>
+      </Form>
+
+   
       </DialogDescription>
     </DialogHeader>
   </DialogContent>
 </Dialog>
-    </>
+      </>
     )
 }
 
