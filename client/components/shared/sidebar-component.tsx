@@ -14,7 +14,7 @@ const Sidebar = () => {
                 <User />
                 Meu perfil
             </a>
-            <Button asChild>
+            <Button className="w-[100px]"asChild>
               <Link href="/logout">Sair</Link>
             </Button>
           </div>

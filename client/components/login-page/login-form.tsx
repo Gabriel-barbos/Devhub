@@ -72,11 +72,12 @@ export function LoginForm() {
           sessionStorage.setItem("accessToken", data.logado)
           setFormSubmitted(true)
         }
-        if(response.status === 401) throw new Error('Senha inválida!')
+        if(response.status === 401) throw new Error('Senha inválida.')
         if(response.status === 404) throw new Error('Conta não encontrada, verifique se seu email está escrito corretamente.')
     } catch (error: any) {
       toast({
-        title: "Erro!",
+        variant: "destructive",
+        title: "Erro",
         description: error.message
       })
       console.log(error)
@@ -105,7 +106,7 @@ export function LoginForm() {
           <FormItem>
             <FormLabel>Email</FormLabel>
             <FormControl>
-              <Input placeholder="" {...field} />
+              <Input placeholder="" required {...field} />
             </FormControl>
             <FormDescription>
               Insira seu email
@@ -121,7 +122,7 @@ export function LoginForm() {
           <FormItem>
             <FormLabel>Senha</FormLabel>
             <FormControl>
-              <Input placeholder="" {...field} />
+              <Input placeholder="" type="password" required {...field} />
             </FormControl>
             <FormDescription>
               Insira sua senha
