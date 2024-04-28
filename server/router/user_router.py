@@ -1,7 +1,7 @@
 
-from fastapi import APIRouter, HTTPException, Response,FastAPI, File, UploadFile, Depends, status
+from fastapi import APIRouter, HTTPException,FastAPI, Depends, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from models.User import User, UserLogin
+from models.User import User
 from env_variables import hash
 
 from db_config import usersCollection
@@ -10,25 +10,21 @@ from bson import ObjectId
 from controllers.UserController import UserController
 from controllers.PerfilController import PerfilController
 
-
-import random
 from fastapi.responses import FileResponse
-import os
-import hashlib
 
 app = FastAPI()
 
 
 
-router = APIRouter()
+user_router = APIRouter()
 
-@router.get("/")
+@user_router.get("/")
 def home():
     return {"bomdia": "gente"}
 
 
 #* User Routes
-@router.get("/users")
+@user_router.get("/users")
 def get_all_users():
     try:
         users = usersCollection.find()
@@ -41,11 +37,10 @@ def get_all_users():
          raise error
     
 
-@router.get("/user/${id}")
+@user_router.get("/user/{id}")
 def get_one_user(id: str):
     try:
         user = usersCollection.find_one({"_id": ObjectId(id)})
-
         if not user:
             raise HTTPException(status_code=401, detail="Usuário não encontrado")
         
@@ -59,7 +54,7 @@ def get_one_user(id: str):
 
 # avatar: UploadFile = File(...)
 
-@router.post("/user/register")
+@user_router.post("/user/register")
 def register_user(user: User):
     try:
         # hashing password
@@ -73,17 +68,17 @@ def register_user(user: User):
         raise error
 
 
-@router.put("/user/update/{id}")
+@user_router.put("/user/update/{id}")
 def update_user(id: str, user: User):
         usersCollection.find_one_and_update({"_id":ObjectId(id)}, {"$set" : dict(user)})
         return {"message": "Usuário adicionado com sucesso"}
 
-@router.delete("/user/delete/{id}")
+@user_router.delete("/user/delete/{id}")
 def delete_user(id:str):
      usersCollection.find_one_and_delete({"_id":ObjectId(id)})
      return {"message": "Usuário deletado com sucesso!"}
 
-@router.post('/login')
+@user_router.post('/login')
 def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
    try:
     user = usersCollection.find_one({'email':user_credentials.username})
@@ -96,43 +91,10 @@ def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
    except HTTPException as error:
        raise error
 
-@router.post("/change-password")
+@user_router.post("/change-password")
 async def password_change(password_change: PerfilController.PasswordChange):
     try:
         email = await PerfilController.change_password(password_change)
         return {"message": f"Senha alterada com sucesso para: {str(email)}"}
     except HTTPException as error:
        raise error
-  
-# rotas imagens:
-IMAGES_DIRECTORY = "imagens"
-@router.put("/images/update")
-async def upload_image(file: UploadFile = File(...), current_user: str = Depends(UserController.get_current_user)):
-    if not os.path.exists(IMAGES_DIRECTORY):
-        os.makedirs(IMAGES_DIRECTORY)
-    
-    filename = f"{random.randint(373, 373773)}{random.randint(373, 373773)}{file.filename}"
-
-    file_path = os.path.join(IMAGES_DIRECTORY, filename)
-    with open(file_path, "wb") as image:
-        image.write(await file.read())
-
-    insert = usersCollection.find_one_and_update({'email': current_user['email']},{"$set": {'imagePath':filename}})
-    return filename
-
-@router.get("/images/{filename}")
-async def get_image(filename: str,current_user: str = Depends(UserController.get_current_user)):
-    file_path = os.path.join(IMAGES_DIRECTORY, filename)
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    else:
-        raise HTTPException(status_code=404, detail="Imagem não encontrada")
-
-@router.delete("/images/{filename}")
-async def delete_image(filename: str):
-    file_path = os.path.join(IMAGES_DIRECTORY, filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return {"mensagem": f"Imagem {filename} excluída com sucesso."}
-    else:
-        raise HTTPException(status_code=404, detail="Imagem não encontrada")
