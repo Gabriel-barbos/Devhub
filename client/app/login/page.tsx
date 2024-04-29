@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/login-page/login-form";
+import { ForgetPasswordDialog } from "@/components/login-page/forget-password-dialog";
 import Link from "next/link";
 export default function Page() {
   return (
@@ -17,6 +18,9 @@ export default function Page() {
             <Link href="/register" className="underline">
               Registrar
             </Link>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            <ForgetPasswordDialog />
           </div>
         </div>
       </div>

@@ -23,12 +23,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { ForgetPasswordForm } from "./forget-passoword/forget-password-form"
+
 
 export function ForgetPasswordDialog() {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+ 
+
+ 
 
   if (isDesktop) {
     return (
@@ -49,37 +53,18 @@ export function ForgetPasswordDialog() {
       <DrawerTrigger asChild>
         <Button variant="outline">Esqueceu a senha?</Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="flex items-center">
         <DrawerHeader className="text-left">
           <DrawerTitle>Insira seu email para recuperar sua senha</DrawerTitle>
         </DrawerHeader>
-        <div>
-
-        </div>
         <ForgetPasswordForm className="px-4" />
-        <DrawerFooter className="pt-2">
+        <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="destructive" className="w-full">Cancelar</Button>
+            <Button variant="destructive" className="w-[100px]">Cancelar</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
-}
-
-function ForgetPasswordForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-    <div className="grid gap-2">
-      <Label htmlFor="email">Email</Label>
-      <Input type="email" id="email" defaultValue="" placeholder="exemplo@email.com"/>
-    </div>
-    <div className="w-full flex justify-center">
-      <Button type="submit" className="w-full md:w-[100px]">
-        Enviar
-      </Button>
-    </div>
-  </form>
   )
 }
 
