@@ -1,17 +1,17 @@
 
 from fastapi import APIRouter, HTTPException,FastAPI, Depends, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from models.User import User
+from models.User import User, ForgotPassword
 from env_variables import hash
 
-from db_config import usersCollection
+from db_config import codesCollection, usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
 from controllers.UserController import UserController
 from controllers.PerfilController import PerfilController
 
-from fastapi.responses import FileResponse
-
+from utils import email_util
+import uuid
 app = FastAPI()
 
 
@@ -52,11 +52,13 @@ def get_one_user(id: str):
          raise error
 
 
-# avatar: UploadFile = File(...)
-
 @user_router.post("/user/register")
 def register_user(user: User):
     try:
+        
+        # user_email = usersCollection.find_one({"email": user.email})
+        # if user_email != None:
+        #     raise HTTPException(status_code=404, detail="Email Já cadastrado")
         # hashing password
         user.password = hash(user.password)
         insert = usersCollection.insert_one(dict(user))
@@ -98,3 +100,39 @@ async def password_change(password_change: PerfilController.PasswordChange):
         return {"message": f"Senha alterada com sucesso para: {str(email)}"}
     except HTTPException as error:
        raise error
+    
+@user_router.post("/forgot-password")
+async def forgot_password(request: ForgotPassword):
+    #* Checar se o usuario existe
+    user =  usersCollection.find_one({'email': request.email})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+    
+    #* Criar o resetcode e inserir no banco de dados
+    reset_code = str(uuid.uuid1())
+    isResetCodeInserted = UserController.create_reset_code(request.email, reset_code)
+    if not isResetCodeInserted:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            , detail="Ocorreu um erro ao inserir")
+    
+    #* Enviar Email
+    subject = "Hello"
+    recipient = [request.email]
+    message= """
+    <!DOCTYPE HTML>
+    <html>
+    <title>Reset Password</title>
+    <body>
+    <div style="width100%,font-family:monospace;">
+        <h1>Hello, {0:} </h1>
+        <p>Trocar senha</p>
+        <a href="http:127.0.0.1:8000/forgot-password?reset_password_token={1:}" style="box-sizing:border-box;border-color:red">
+    </body>
+    </html>
+    """.format(request.email, reset_code)
+
+    teste = await email_util.send_email(subject,recipient,message)
+    # print(teste)
+    return {"code": 200,
+            "message": "email enviado"
+            }
