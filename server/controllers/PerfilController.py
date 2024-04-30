@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from pydantic import BaseModel
 from pymongo import MongoClient, ReturnDocument
-from env_variables import hash
+from utils.util import hash
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.devhub

@@ -1,9 +1,9 @@
 from typing import List
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException, status
+from fastapi import  HTTPException, status
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr
-from starlette.responses import JSONResponse
+from passlib.context import CryptContext
+import hashlib
 
 from env_variables import MAIL_USERNAME, MAIL_PASSWORD,MAIL_FROM,MAIL_PORT,MAIL_SERVER,MAIL_STARTTLS,MAIL_SSL_TLS,USE_CREDENTIALS,VALIDATE_CERTS
 
@@ -35,3 +35,8 @@ async def send_email(subject:str,recipient:List,message:str):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
                             , detail="Ocorreu um erro ao enviar email")
 
+
+#* HASH SENHA
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def hash(password: str):
+    return hashlib.sha256(password.encode()).hexdigest()
