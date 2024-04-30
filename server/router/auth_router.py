@@ -1,13 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from models.User import ForgotPassword
-from utils.util import hash
+from utils import util
 
 from db_config import usersCollection
 from controllers.UserController import UserController
 from controllers.PerfilController import PerfilController
 
-from utils.util import hash
 import uuid
 
 auth_router  = APIRouter(tags=['Authentication'])
@@ -19,7 +18,7 @@ def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
     user = usersCollection.find_one({'email':user_credentials.username})
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Informações inválidas")
-    if user['password'] == hash(user_credentials.password):
+    if user['password'] == util.hash(user_credentials.password):
         acess_token = UserController.create_acess_token(data={"username": user['username']})
         return {"token": acess_token,"token_type": "bearer"}
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
@@ -65,7 +64,7 @@ async def forgot_password(request: ForgotPassword):
     """.format(request.email, reset_code)
 
     teste = await util.send_email(subject,recipient,message)
-    # print(teste)
+    # print(teste) 
     return {"code": 200,
             "message": "email enviado"
             }

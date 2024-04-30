@@ -2,11 +2,7 @@
 from fastapi import APIRouter, HTTPException,FastAPI, File, UploadFile, Depends
 
 from db_config import usersCollection
-from serializer.user_serializer import convertUser, convertUsers
-from bson import ObjectId
 from controllers.UserController import UserController
-from controllers.PerfilController import PerfilController
-
 
 import random
 from fastapi.responses import FileResponse

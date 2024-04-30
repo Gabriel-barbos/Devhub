@@ -1,13 +1,13 @@
 
-from fastapi import APIRouter, HTTPException,FastAPI, Depends, status
-from models.User import User
+from fastapi import APIRouter, HTTPException,FastAPI, Depends, status,File, UploadFile
+from models.User import User, UpdateUser
 from utils.util import hash
 
 from db_config import usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
 from controllers.UserController import UserController
-
+from typing import Optional
 app = FastAPI()
 
 
@@ -67,11 +67,8 @@ def register_user(user: User):
 
 
 @user_router.put("/user/update/{id}")
-def update_user(id: str, user: User,current_user: str = Depends(UserController.get_current_user)):
-        print("========================================")
-        print(current_user)
-        print("========================================")
-        userUpdated = usersCollection.find_one_and_update({"_id": id}, {"$set" : dict(user)})
+def update_user(id: str,user:UpdateUser,current_user: str = Depends(UserController.get_current_user)):
+        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
         if not userUpdated:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")
