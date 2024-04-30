@@ -68,8 +68,8 @@ export function LoginForm() {
         if(response.ok) {
           const data = await response.json()
           console.log(data)
-          setAccessToken(data.logado);
-          sessionStorage.setItem("accessToken", data.logado)
+          setAccessToken(data.token);
+          sessionStorage.setItem("accessToken", data.token)
           setFormSubmitted(true)
         }
         if(response.status === 401) throw new Error('Senha inválida.')

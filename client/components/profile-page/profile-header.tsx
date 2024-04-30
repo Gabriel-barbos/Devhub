@@ -14,7 +14,8 @@ import { ProfileForm } from "./edit-profileForm"
 
 
 
-  const ProfileHeader = () => {
+  const ProfileHeader = ({name, username, bio}) => {
+ 
     return (
       <>
         <div className={"flex items-center w-full justify-between"}>
@@ -27,14 +28,14 @@ import { ProfileForm } from "./edit-profileForm"
             </div>
             <div>
               <div className="flex items-center gap-4">
-                <h1 className={"text-xl font-semibold"}>Gabriel Meira</h1>
+                <h1 className={"text-xl font-semibold"}>{name}</h1>
                 <div className="flex gap-1">
                   <Badge variant={"outline"}>HTML</Badge>
                   <Badge variant={"outline"}>CSS</Badge>
                   <Badge variant={"outline"}>Javascript</Badge>
                 </div>
               </div>
-              <p className={"text-muted-foreground"}>@gabrielmeira</p>
+              <p className={"text-muted-foreground"}>@{username}</p>
             </div>
           </div>
           <div>
@@ -55,8 +56,7 @@ import { ProfileForm } from "./edit-profileForm"
         </div>
         <div className="mt-6 mb-8">
           <p className="text-base">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Adipisci,
-            aspernatur.
+            {bio}
           </p>
         </div>
       </>

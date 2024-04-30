@@ -134,7 +134,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="" type="password" {...field} />
               </FormControl>
               <FormDescription>
                 Insira uma senha segura.
