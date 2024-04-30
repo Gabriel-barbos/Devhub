@@ -1,11 +1,10 @@
-from models.User import User
-import hashlib
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from env_variables import ACESS_TOKEN_EXPIRE_MINUTES,ALGORITHM,SECRET_KEY
 from serializer.user_serializer import convertUser, convertUsers
-from db_config import usersCollection
+from db_config import usersCollection,codesCollection
 from models.Token import TokenData
+from models.User import ResetCode
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
@@ -28,11 +27,10 @@ class UserController:
 
       try:
          payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-
-         email: str = payload.get("user_email")
-         if email is None:
+         username: str = payload.get("username")
+         if username is None:
             raise credentials_exception
-         token_data = TokenData(email=email)
+         token_data = TokenData(username=username)
       except JWTError:
          raise credentials_exception
       return token_data
@@ -44,11 +42,29 @@ class UserController:
 
       token_dict = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
-      email = token_dict['user_email']
-      user = usersCollection.find_one({'email': email})
+      username = token_dict['username']
+      user = usersCollection.find_one({'username': username})
 
       return user
    
+   def email_exists(email: str) -> bool:  
+         user = usersCollection.find_one({'email': email})
+         if not user:
+            return False
+         return True
+   
+   def create_reset_code(email:str,reset_code:str):
+      dict_reset_code = {
+         "email": email,
+         "reset_code": reset_code,
+         "status": True,
+         "expired_in": datetime.now()
+      }
+      insert = codesCollection.insert_one(dict_reset_code)
+      if not insert:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Ocorreu um erro ao inserir")
+      return True
+
   
 
    

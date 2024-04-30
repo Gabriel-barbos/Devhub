@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-
+from datetime import datetime
 
 class User (BaseModel):
     username: str
@@ -14,13 +14,15 @@ class UserLogin(BaseModel):
     username: EmailStr
     password: str
 
-class Token(BaseModel):
-    acess_token:str
-    token_type:str
 
-class TokenData(BaseModel):
-    username: str | None = None
-    
 
    
-    
+# Esqueci a senha
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetCode(BaseModel):
+    email: EmailStr
+    reset_code: str
+    status: bool
+    expired_in: Optional[datetime] = None

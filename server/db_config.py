@@ -9,6 +9,8 @@ client = MongoClient(DBCONNECTIONSTRING, server_api=ServerApi('1'))
 db = client.devhub
 
 usersCollection = db['users']
+codesCollection = db['codes']
+postsCollection = db['posts']
 
 # Send a ping to confirm a successful connection
 try:
