@@ -37,28 +37,28 @@ def get_all_users():
          raise error
     
 
-@user_router.get("/user/{id}")
-def get_one_user(id: str):
+@user_router.get("/user/{username}")
+def get_one_user(username: str):
     try:
-        user = usersCollection.find_one({"_id": ObjectId(id)})
+        user = usersCollection.find_one({'username': username})
+
         if not user:
-            raise HTTPException(status_code=401, detail="Usuário não encontrado")
+            return HTTPException(status_code=401, detail="Usuário não encontrado")
         
         convertedUser = convertUser(user)
         return {
              "message":"Usuário encontrado",
              "data" : convertedUser}
     except HTTPException(status_code=500, detail="Ocorreu um erro inesperado") as error:
-         raise error
+         return error
 
 
 @user_router.post("/user/register")
 def register_user(user: User):
     try:
         
-        # user_email = usersCollection.find_one({"email": user.email})
-        # if user_email != None:
-        #     raise HTTPException(status_code=404, detail="Email Já cadastrado")
+        if UserController.email_exists(user.email):
+            return HTTPException(status_code=404, detail="Email Já cadastrado")
         # hashing password
         user.password = hash(user.password)
         insert = usersCollection.insert_one(dict(user))
@@ -83,12 +83,13 @@ def delete_user(id:str):
 @user_router.post('/login')
 def login(user_credentials: OAuth2PasswordRequestForm= Depends()):
    try:
+    #* Procura um usuárion com o mesmo email que o campo username traz
     user = usersCollection.find_one({'email':user_credentials.username})
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Informações inválidas")
     if user['password'] == hash(user_credentials.password):
-        acess_token = UserController.create_acess_token(data={"user_email": user['email']})
-        return {"logado": acess_token,"token_type": "bearer"}
+        acess_token = UserController.create_acess_token(data={"username": user['username']})
+        return {"token": acess_token,"token_type": "bearer"}
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
    except HTTPException as error:
        raise error
@@ -104,8 +105,8 @@ async def password_change(password_change: PerfilController.PasswordChange):
 @user_router.post("/forgot-password")
 async def forgot_password(request: ForgotPassword):
     #* Checar se o usuario existe
-    user =  usersCollection.find_one({'email': request.email})
-    if not user:
+    # user =  usersCollection.find_one({'email': request.email})
+    if not UserController.email_exists(request.email):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
     
     #* Criar o resetcode e inserir no banco de dados

@@ -14,13 +14,7 @@ class UserLogin(BaseModel):
     username: EmailStr
     password: str
 
-class Token(BaseModel):
-    acess_token:str
-    token_type:str
 
-class TokenData(BaseModel):
-    username: str | None = None
-    
 
    
 # Esqueci a senha

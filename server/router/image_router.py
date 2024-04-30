@@ -35,8 +35,6 @@ async def upload_image(file: UploadFile = File(...), current_user: str = Depends
     with open(file_path, "wb") as image:
         image.write(await file.read())
 
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    print(current_user)
 
     insert = usersCollection.find_one_and_update({'email': current_user['email']},{"$set": {'imagePath':filename}})
     return filename

@@ -27,11 +27,10 @@ class UserController:
 
       try:
          payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-
-         email: str = payload.get("user_email")
-         if email is None:
+         username: str = payload.get("username")
+         if username is None:
             raise credentials_exception
-         token_data = TokenData(email=email)
+         token_data = TokenData(username=username)
       except JWTError:
          raise credentials_exception
       return token_data
@@ -43,13 +42,13 @@ class UserController:
 
       token_dict = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
-      email = token_dict['user_email']
-      user = usersCollection.find_one({'email': email})
+      username = token_dict['username']
+      user = usersCollection.find_one({'username': username})
 
       return user
    
    def email_exists(email: str) -> bool:  
-         user = usersCollection.find_one({"email": email})
+         user = usersCollection.find_one({'email': email})
          if not user:
             return False
          return True
