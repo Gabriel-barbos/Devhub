@@ -3,7 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Bolt, } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +27,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
   
-const formSchema = z.object({
+const UserConfigForm = z.object({
     email: z.string(), 
     password: z.string().min(8, {
     message: "Sua senha precisa ter no mínimo 8 caracteres.",
@@ -34,18 +36,47 @@ const formSchema = z.object({
 })
 const EditButton = () => {
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+
+  const {toast} = useToast()
+  const router = useRouter()
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const form = useForm<z.infer<typeof UserConfigForm>>({
+    resolver: zodResolver(UserConfigForm),
     defaultValues: {
-      email: "",
-      password: ""
+    email: "",
+    password: ""
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    
-  console.log(values)
+  const onSubmit = async (values: z.infer<typeof UserConfigForm>) => {
+    toast({
+    title: "Sucesso.",
+    description: "Informações atualizadas com sucesso!",
+  })
+  try {
+    UserConfigForm.parse(values)
+    const response = await fetch("http://localhost:8000/user/config",{
+    method: "POST",
+    headers: { "Content-Type": "application/json"},
+    body: JSON.stringify(values)
+    })
+    console.log(values)
+    } catch(error) {
+      console.log(error)
+    }
+    setFormSubmitted(true)
   }
+
+  useEffect(() => {
+    if (formSubmitted) {
+      const timeoutId: any = setTimeout(() => {
+        router.push('/profile');
+      }, 1000);
+      return () => clearTimeout(timeoutId)
+    }
+  }, [formSubmitted, router])
+
+
     return (
       <>
  <Dialog>
