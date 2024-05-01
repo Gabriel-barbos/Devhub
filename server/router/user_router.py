@@ -66,9 +66,9 @@ def register_user(user: User):
         raise error
 
 
-@user_router.put("/user/update/{id}")
-def update_user(id: str,user:UpdateUser,current_user: str = Depends(UserController.get_current_user)):
-        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
+@user_router.put("/user/update/{username}")
+def update_user(username: str,user:UpdateUser,current_user: str = Depends(UserController.get_current_user)):
+        userUpdated = usersCollection.find_one_and_update({"username": username}, {"$set" : dict(user)})
         if not userUpdated:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")

@@ -10,9 +10,7 @@ import {
         SheetTitle,
         SheetTrigger,
       } from "@/components/ui/sheet"
-import { ProfileForm } from "./edit-profileForm"
-
-
+import ProfileForm from "./edit-profileForm"
 
   const ProfileHeader = ({name, username, bio}) => {
  
@@ -47,7 +45,7 @@ import { ProfileForm } from "./edit-profileForm"
                 <SheetHeader>
                   <SheetTitle>Edite Suas Informações</SheetTitle>
                   <SheetDescription>
-                    <ProfileForm />
+                    <ProfileForm name={name} username={username} bio={bio} />
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
