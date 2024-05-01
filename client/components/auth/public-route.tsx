@@ -18,7 +18,7 @@ const PublicRoute = ({ children }: PrivateRouteProps) => {
       if(token){
         setIsAuth(true)
         const decodedToken = jwtDecode(token)
-        router.push(`/profile/${decodedToken.username}`)
+        router.push(`${decodedToken.username}`)
       }
     }, [token])
    
