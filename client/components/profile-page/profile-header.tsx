@@ -1,4 +1,6 @@
 "use client"
+
+import { jwtDecode } from "jwt-decode"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -15,7 +17,7 @@ import { ProfileForm } from "./edit-profileForm"
 
 
   const ProfileHeader = ({name, username, bio}) => {
- 
+    
     return (
       <>
         <div className={"flex items-center w-full justify-between"}>
@@ -38,21 +40,6 @@ import { ProfileForm } from "./edit-profileForm"
               <p className={"text-muted-foreground"}>@{username}</p>
             </div>
           </div>
-          <div>
-            <Sheet>
-              <SheetTrigger>
-              <Button variant="outline">Editar Perfil</Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Edite Suas Informações</SheetTitle>
-                  <SheetDescription>
-                    <ProfileForm />
-                  </SheetDescription>
-                </SheetHeader>
-              </SheetContent>
-            </Sheet>
-          </div>
         </div>
         <div className="mt-6 mb-8">
           <p className="text-base">
@@ -60,7 +47,7 @@ import { ProfileForm } from "./edit-profileForm"
           </p>
         </div>
       </>
-    );
+    )
 }
 
 export default ProfileHeader;
