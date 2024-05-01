@@ -14,9 +14,6 @@ app = FastAPI()
 
 image_router = APIRouter(tags=['Image'])
 
-@image_router.get("/")
-def home():
-    return {"bomdia": "gente"}
 
 # rotas imagens:
 IMAGES_DIRECTORY = "imagens"
