@@ -15,10 +15,10 @@ class UserLogin(BaseModel):
     password: str
 
 class UpdateUser(BaseModel):
-    username: Optional[str]
-    name: Optional[str]
-    email: Optional[EmailStr]
-    password: Optional[str]
+    username: Optional[str] = None
+    name: Optional[str]  = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
     imagePath: Optional[str] = None
     bio: Optional[str] = None
 

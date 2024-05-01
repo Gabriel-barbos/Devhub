@@ -4,11 +4,10 @@ from env_variables import ACESS_TOKEN_EXPIRE_MINUTES,ALGORITHM,SECRET_KEY
 from serializer.user_serializer import convertUser, convertUsers
 from db_config import usersCollection,codesCollection
 from models.Token import TokenData
-from models.User import ResetCode
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
-ACESS_TOKEN_EXPIRE_MINUTES = 20
+ACESS_TOKEN_EXPIRE_MINUTES = 50
 from jose import JWTError, jwt
 from datetime import datetime,timedelta
 
