@@ -13,21 +13,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 
-const PostMaker = () => {
-    
-
+const PostMaker = ({name, username}) => {
     return (
         <Card>
             <CardHeader className="flex items-center flex-row justify-between">
                 <div className="flex items-center gap-2">
                     <Avatar className="hidden h-9 w-9 sm:flex">
                         {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                        <AvatarFallback>GM</AvatarFallback>
+                        <AvatarFallback>{avatarFallbacker(name)}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@gabrielmeira</CardTitle>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{username}</CardTitle>
                 </div>
-                {/* <CardDescription>a</CardDescription> */}
+                <CardDescription>Postando agora</CardDescription>
             </CardHeader>
             <CardContent>
                 <Textarea placeholder="No que você está pensando?" className={"border-0 focus:!ring-transparent text-base"} />

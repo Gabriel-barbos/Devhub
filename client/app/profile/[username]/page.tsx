@@ -3,6 +3,7 @@
 import ProfileHeader from "@/components/profile-page/profile-header"
 import ProfilePosts from "@/components/profile-page/profile-posts"
 import ProfileTabs from "@/components/profile-page/profile-tabs"
+import PostMaker from "@/components/shared/post-maker";
 import { useState } from "react";
 export default function Page({params} : {params: {username: string}}) {
     const [name, setName] = useState("")
@@ -39,6 +40,7 @@ export default function Page({params} : {params: {username: string}}) {
         <div>
         <ProfileHeader name={name} username={params.username} bio={bio}></ProfileHeader>
         <ProfileTabs />
+        <PostMaker name={name} username={params.username} />
         <ProfilePosts />
         </div>
        );
