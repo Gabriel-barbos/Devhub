@@ -1,5 +1,6 @@
 
-from fastapi import  APIRouter, HTTPException,FastAPI, status, Depends
+from typing import List
+from fastapi import  APIRouter, Form, HTTPException,FastAPI, status, Depends
 from bson import ObjectId,Binary
 from db_config import badgesCollection,usersCollection
 
@@ -7,7 +8,7 @@ from controllers.BadgeController import BadgeController
 from controllers.UserController import UserController
 app = FastAPI()
 import json
-from models.Badge import Badge
+from models.Badge import Badge, UpdateBadge
 
 from serializer.post_serializer import convertPost,convertPosts
 from serializer.user_serializer import convertUser,convertUsers 
@@ -54,12 +55,10 @@ async def get_all_badges():
 #  media: List[UploadFile] = File(None, media_type="image/*")  // Usar mais tarde pra por imagem
 
 @badge_router.post("/badge")
-def create_badge(badge: Badge):
+async def create_one_badge(badge: Badge):
      try:
-
-       
           
-          insert = badgesCollection.insert_one(dict(badge))
+          insert = await BadgeController.insert_badge(badge)
           if not insert:
                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                            detail="Erro ao inserir")
@@ -69,21 +68,37 @@ def create_badge(badge: Badge):
                            detail="Erro ao adicionar badge") as error:
          return error
     
-# @badge_router.get("/post/{username}")
+@badge_router.post("/badges")
+async def create_many_badges(badges: List[Badge]):
+     try:
+          
+          insert = await BadgeController.insert_badge(badges)
+          if not insert:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                           detail="Erro ao inserir")
+          return insert
+
+     except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                           detail="Erro ao adicionar badge") as error:
+         return error
 
 
-# @badge_router.put("/post/update/{id}")
-# async def update_post(id:str, post_request: Post, current_user: str = Depends(UserController.get_current_user)):
-#      try: 
-#           print("====================================================")
-#           print(post_request)
-#           print("====================================================")
-#           updatedUser = await PostController.update_post(id,post_request)
-#           if updatedUser == False:
-#                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao realizar update")
-#           return updatedUser
-#      except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado") as error:
-#           return error
+@badge_router.put("/badge/update/{id}")
+async def update_badge(id:str, badge_request: List[str]):
+     try: 
+          print("====================================================")
+          print(badge_request)
+          print("====================================================")
+          badgeDict = convertBadges(badge_request)
+          updatedUser = await usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set":badgeDict},False)
+          print("====================================================")
+          print(updatedUser)
+          print("====================================================")
+          if not updatedUser:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao realizar update")
+          return updatedUser
+     except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado") as error:
+          return error
 
 
 

@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from models.Badge import Badge
 
 class User (BaseModel):
     username: str
@@ -9,6 +10,7 @@ class User (BaseModel):
     password: str
     imagePath: Optional[str] = None
     bio: Optional[str] = None
+    badges: Optional[List[str]] = None
 
 class UserLogin(BaseModel):
     username: EmailStr
@@ -22,6 +24,8 @@ class UpdateUserInfo(BaseModel):
 class UpdateUserCredentials(BaseModel):
     email: EmailStr
     password: str
+
+
 
 # Esqueci a senha
 class ForgotPassword(BaseModel):
