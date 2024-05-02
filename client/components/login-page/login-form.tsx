@@ -65,7 +65,7 @@ export function LoginForm() {
           const data = await response.json()
           sessionStorage.setItem("accessToken", data.token)
           const decodedToken = jwtDecode(data.token)
-          router.push(`profile/${decodedToken.username}`)
+          router.push(`${decodedToken.username}`)
           setFormSubmitted(true)
         }
         if(response.status === 401) throw new Error('Senha inválida.')

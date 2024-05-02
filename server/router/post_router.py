@@ -1,17 +1,16 @@
 
-from fastapi import Form, APIRouter, HTTPException,FastAPI, status,File, UploadFile, Depends
-from pydantic import BaseModel
+from fastapi import  APIRouter, HTTPException,FastAPI, status, Depends
 from models.Post import Post
-from typing import Annotated, List, Optional
 from datetime import datetime
 from bson import ObjectId
-from db_config import postsCollection
+from db_config import postsCollection,usersCollection
 from controllers.PostController import PostController
 from controllers.UserController import UserController
 app = FastAPI()
 import json
 
 from serializer.post_serializer import convertPost,convertPosts
+from serializer.user_serializer import convertUser,convertUsers 
 
 
 
@@ -36,10 +35,14 @@ async def get_all_posts_of_user(username:str):
      try:
 
           userPosts =  postsCollection.find({"author_username": username})
-          convertposts = convertPosts(userPosts)
-          print(convertposts)
+          convertedPosts = convertPosts(userPosts)
 
-          return convertposts
+          user = usersCollection.find({"username": username})
+          convertedUsers = convertUsers(user)
+          author_name = convertedUsers[0]['name']
+
+          return {"posts": convertedPosts,
+                  "name": author_name}
 
 
      except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao encontrar posts") as error:
@@ -71,6 +74,23 @@ async def create_post(post: Post,current_user: str = Depends(UserController.get_
          raise error
     
 # @post_router.get("/post/{username}")
+
+
+@post_router.put("/post/update/{id}")
+async def update_post(id:str, post_request: Post, current_user: str = Depends(UserController.get_current_user)):
+     try: 
+          print("====================================================")
+          print(post_request)
+          print("====================================================")
+          updatedUser = await PostController.update_post(id,post_request)
+          if updatedUser == False:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao realizar update")
+          return updatedUser
+     except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado") as error:
+          return error
+
+
+
 
 
 @post_router.delete("/post/delete/{id}")
