@@ -15,8 +15,16 @@ import avatarFallbacker from "@/lib/utils/avatarFallbacker"
 import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react"
 
+  interface IProfileHeaderParams {
+    name: string,
+    username: string,
+    bio: string, 
+    id: string, 
+    auth: boolean
+  }
 
-  const ProfileHeader = ({name, username, bio, id, auth}) => {
+
+  const ProfileHeader = ({name, username, bio, id, auth}: IProfileHeaderParams) => {
       const [badges, setBadges] = useState([]);
 
       useEffect(() => {
