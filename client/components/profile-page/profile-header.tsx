@@ -10,13 +10,13 @@ import {
         SheetTitle,
         SheetTrigger,
       } from "@/components/ui/sheet"
-import { ProfileForm } from "./edit-profileForm"
+import  ProfileForm  from "./edit-profileForm"
 import avatarFallbacker from "@/lib/utils/avatarFallbacker"
 import { jwtDecode } from "jwt-decode"
 import { useState } from "react"
 
 
-  const ProfileHeader = ({name, username, bio}) => {
+  const ProfileHeader = ({name, username, bio, id}) => {
     const [token, setToken] = useState(() => {
       if(typeof window !== "undefined"){
         return sessionStorage.getItem("accessToken") 
@@ -56,7 +56,7 @@ import { useState } from "react"
                 <SheetHeader>
                   <SheetTitle>Edite Suas Informações</SheetTitle>
                   <SheetDescription>
-                    <ProfileForm />
+                    <ProfileForm name={name} username={username} bio={bio} id={id} />
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
