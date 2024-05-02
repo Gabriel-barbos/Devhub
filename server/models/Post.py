@@ -5,8 +5,8 @@ from datetime import datetime
 class Post (BaseModel):
     content: str
     media: Optional[str] = None
-    author_username: Optional[str]=None
-    countLikes: Optional[int]= None
+    author_username: Optional[str] =None
+    countLikes: Optional[int] = None
     created_at: Optional[datetime]= None
 
 class Article (BaseModel):

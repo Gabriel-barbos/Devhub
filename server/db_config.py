@@ -11,6 +11,7 @@ db = client.devhub
 usersCollection = db['users']
 codesCollection = db['codes']
 postsCollection = db['posts']
+badgesCollection = db['badges']
 
 # Send a ping to confirm a successful connection
 try:
