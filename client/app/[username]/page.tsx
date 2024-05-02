@@ -39,12 +39,25 @@ export default function Page({params} : {params: {username: string}}) {
         )
     }  
 
+    const [posts, setPosts] = useState([]);
+
+    const fetchPosts = async () => {
+      const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
+          method: "GET",
+        })
+        if(res.ok) {
+          const info = await res.json()
+        }
+    }
+
+    fetchPosts()
+
     return (
         <div>
         <ProfileHeader name={name} username={params.username} bio={bio}></ProfileHeader>
         <ProfileTabs />
         <PostMaker name={name} username={params.username} />
-        <ProfilePosts />
+        <ProfilePosts posts={posts} />
         </div>
        );
   }

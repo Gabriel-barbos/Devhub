@@ -9,12 +9,12 @@ const Sidebar = () => {
     return (
         <div className={"p-8 h-screen relative flex flex-col"}>
           <h1 className="font-black text-6xl md:text-2xl dark:text-slate-50">devhub</h1>
-          <div className="flex flex-col mt-10 gap-2">
+          <div className="flex flex-col mt-10 gap-4">
             <a href="" className="flex items-center gap-2">
                 <User />
                 Meu perfil
             </a>
-            <Button className="w-[100px]"asChild>
+            <Button variant={"destructive"} className="w-[100px]"asChild>
               <Link href="/logout">Sair</Link>
             </Button>
           </div>
