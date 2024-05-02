@@ -13,18 +13,19 @@ import {
 import  ProfileForm  from "./edit-profileForm"
 import avatarFallbacker from "@/lib/utils/avatarFallbacker"
 import { jwtDecode } from "jwt-decode"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
-  const ProfileHeader = ({name, username, bio, id}) => {
-    const [token, setToken] = useState(() => {
-      if(typeof window !== "undefined"){
-        return sessionStorage.getItem("accessToken") 
-      } return ""
-    })
-    const decodedToken = jwtDecode(String(token))
-    const authUsername = decodedToken.username
-    if(username === authUsername){
+  const ProfileHeader = ({name, username, bio, id, auth}) => {
+      const [badges, setBadges] = useState([]);
+
+      useEffect(() => {
+        const badgesFromSession = sessionStorage.getItem("badges");
+        if(badgesFromSession){
+          setBadges(JSON.parse(badgesFromSession));
+        }
+      }, [])
+
       return (
         <>
         <div className={"flex items-center w-full justify-between"}>
@@ -32,17 +33,17 @@ import { useState } from "react"
             <div>
               <Avatar className="hidden h-20 w-20 sm:flex">
                 {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                <AvatarFallback className="text-2xl">a</AvatarFallback>
+                <AvatarFallback className="text-2xl">{(name && typeof name == "string") && avatarFallbacker(name)}</AvatarFallback>
               </Avatar>
             </div>
             <div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-2 mb-3">
                 <h1 className={"text-xl font-semibold"}>{name}</h1>
-                <div className="flex gap-1">
-                  <Badge variant={"outline"}>HTML</Badge>
-                  <Badge variant={"outline"}>CSS</Badge>
-                  <Badge variant={"outline"}>Javascript</Badge>
-                </div>
+                {badges.length > 0 && <div className="flex gap-1">
+                  {badges.map((badge) => {
+                    return <Badge variant={"outline"}>{badge}</Badge>
+                  })}
+                </div>}
               </div>
               <p className={"text-muted-foreground"}>@{username}</p>
             </div>
@@ -50,13 +51,13 @@ import { useState } from "react"
           <div>
             <Sheet>
               <SheetTrigger>
-              <Button variant="outline">Editar Perfil</Button>
+              { auth && <Button variant="outline">Editar Perfil</Button> }
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
                   <SheetTitle>Edite Suas Informações</SheetTitle>
                   <SheetDescription>
-                    <ProfileForm name={name} username={username} bio={bio} id={id} />
+                    <ProfileForm name={name} desc={bio} id={id} badges={badges} />
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
@@ -70,39 +71,8 @@ import { useState } from "react"
         </div>
       </>
       )
-    }
-      
-    return (
-      <>
-        <div className={"flex items-center w-full justify-between"}>
-          <div className={"flex items-center gap-4"}>
-            <div>
-              <Avatar className="hidden h-20 w-20 sm:flex">
-                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                <AvatarFallback className="text-2xl">a</AvatarFallback>
-              </Avatar>
-            </div>
-            <div>
-              <div className="flex items-center gap-4">
-                <h1 className={"text-xl font-semibold"}>{name}</h1>
-                <div className="flex gap-1">
-                  <Badge variant={"outline"}>HTML</Badge>
-                  <Badge variant={"outline"}>CSS</Badge>
-                  <Badge variant={"outline"}>Javascript</Badge>
-                </div>
-              </div>
-              <p className={"text-muted-foreground"}>@{username}</p>
-            </div>
-          </div>
+    
 
-        </div>
-        <div className="mt-6 mb-8">
-          <p className="text-base">
-            {bio}
-          </p>
-        </div>
-      </>
-    )
 }
 
 export default ProfileHeader;

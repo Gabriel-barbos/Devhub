@@ -43,6 +43,7 @@ const PostMaker = ({name, username}) => {
                 variant: "default",
                 title: "Post criado com sucesso"
             })
+            location.reload()
         }
     }
     return (

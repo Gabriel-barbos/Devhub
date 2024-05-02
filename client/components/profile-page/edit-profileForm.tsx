@@ -14,10 +14,10 @@ import { Label } from "@/components/ui/label"
 
 const EditForm = z.object({
   name: z.string(),
-  description: z.string(),
+  bio: z.string(),
 })
 
-const ProfileForm = ({name, username, bio, id}) => {
+const ProfileForm = ({name, desc, id, badges}) => {
 
   // 1. Define your form.
   const {toast} = useToast()
@@ -31,7 +31,7 @@ const ProfileForm = ({name, username, bio, id}) => {
     resolver: zodResolver(EditForm),
     defaultValues: {
       name: name,
-      description: bio
+      bio: desc
     },
   })
 
@@ -57,16 +57,10 @@ try{
       console.log("token:" + token)
     }
     setFormSubmitted(true)
+    location.reload()
 }
 
-useEffect(() => {
-  if (formSubmitted) {
-    const timeoutId: any = setTimeout(() => {
-      router.push('/profile');
-    }, 1000);
-    return () => clearTimeout(timeoutId)
-  }
-}, [formSubmitted, router])
+
 
    return (
      <>
@@ -88,7 +82,7 @@ useEffect(() => {
      ></FormField>
      <FormField
            control={form.control}
-           name="description"
+           name="bio"
            render={({ field }) => (
              <FormItem>
                <FormLabel>Descrição</FormLabel>
@@ -108,6 +102,17 @@ useEffect(() => {
       <Label htmlFor="picture">Insira uma foto de perfil</Label>
       <Input id="picture" type="file" />
     </div>
+    <div className="grid w-full max-w-sm items-center gap-3.5 mt-5">
+      <Label htmlFor="badges">Badges</Label>
+      <p>Insira os badges separados por ,</p>
+      <Input type="text" onChange={(e) => {
+        const badgesSess = e.target.value.split(", ");
+        sessionStorage.setItem("badges", JSON.stringify(badgesSess))
+      }} onKeyDown={(e) => {
+        if(e.key == "Enter") location.reload()
+      }} />
+    </div>
+    
      </>
 );
 }

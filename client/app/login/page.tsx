@@ -3,7 +3,7 @@ import { ForgetPasswordDialog } from "@/components/login-page/forget-password-di
 import Link from "next/link";
 export default function Page() {
   return (
-    <div className="w-full py-12">
+    <div className="w-full h-screen flex items-center justify-center flex-col">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
