@@ -55,7 +55,7 @@ def register_user(user: User):
         
         if UserController.email_exists(user.email):
             return HTTPException(status_code=404, detail="Email Já cadastrado")
-        # hashing password
+        #* hashing password
         user.password = hash(user.password)
         insert = usersCollection.insert_one(dict(user))
         if not insert:

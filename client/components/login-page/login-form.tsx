@@ -1,5 +1,6 @@
 "use client"
 
+import { jwtDecode } from 'jwt-decode'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Label } from "@/components/ui/label"
@@ -20,6 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { profile } from 'console'
+import { JwtPayload } from 'jwt-decode'
 
 const UserLogin = z.object({
   username: z.string().email({message: "Email inválido"}),
@@ -33,13 +36,7 @@ export function LoginForm() {
   const {toast} = useToast()
   const router = useRouter()
   const [formSubmitted, setFormSubmitted] = useState(false)
-  const [accessToken, setAccessToken] = useState(() => {
-    if (typeof sessionStorage !== "undefined") {
-      return sessionStorage.getItem("accessToken") || ""
-    } else {
-      return ""
-    }
-  })
+  
   const form = useForm<z.infer<typeof UserLogin>>({
     resolver: zodResolver(UserLogin),
     defaultValues: {
@@ -48,7 +45,6 @@ export function LoginForm() {
     },
   })
   
- 
 
   const onSubmit = async (values: z.infer<typeof UserLogin>) => {
     const formData = new URLSearchParams()
@@ -67,9 +63,9 @@ export function LoginForm() {
       })
         if(response.ok) {
           const data = await response.json()
-          console.log(data)
-          setAccessToken(data.token);
           sessionStorage.setItem("accessToken", data.token)
+          const decodedToken = jwtDecode(data.token)
+          router.push(`profile/${decodedToken.username}`)
           setFormSubmitted(true)
         }
         if(response.status === 401) throw new Error('Senha inválida.')
@@ -84,18 +80,7 @@ export function LoginForm() {
     }
   }
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("accessToken")
-    if(token){
-      router.push('/profile')
-    }
-    if (formSubmitted) {
-      const timeoutId: any = setTimeout(() => { 
-        router.push('/profile')
-      }, 1000)
-      return () => clearTimeout(timeoutId)
-    }
-  }, [formSubmitted, router])
+
 
   return (
     <Form  {...form}>

@@ -1,8 +1,12 @@
+import PublicRoute from "@/components/auth/public-route"
+
 
 export default function LayoutLogin({ children }: { children: React.ReactNode }){
     return (
-    <section>
+    <PublicRoute>
+      <section>
       {children}
-    </section>
+      </section>
+    </PublicRoute>
     )
 }

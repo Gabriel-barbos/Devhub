@@ -1,4 +1,6 @@
 "use client"
+
+import { jwtDecode } from "jwt-decode"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +15,7 @@ import {
 import ProfileForm from "./edit-profileForm"
 
   const ProfileHeader = ({name, username, bio}) => {
- 
+    
     return (
       <>
         <div className={"flex items-center w-full justify-between"}>
@@ -58,7 +60,7 @@ import ProfileForm from "./edit-profileForm"
           </p>
         </div>
       </>
-    );
+    )
 }
 
 export default ProfileHeader;
