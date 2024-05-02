@@ -1,12 +1,9 @@
 import Post from "@/components/shared/post-component"
 
-const ProfilePosts = () => {
+const ProfilePosts = (posts) => {
     return (
         <div className="py-4 flex flex-col gap-4">
-            <Post />
-            <Post />
-            <Post />
-            <Post />
+            <Post user={{name: "aa", username: "bb"}} likes={1} content={"safadeza"} created_at="11/11" />
         </div>
     )
 }

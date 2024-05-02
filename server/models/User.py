@@ -14,13 +14,14 @@ class UserLogin(BaseModel):
     username: EmailStr
     password: str
 
-class UpdateUser(BaseModel):
-    username: Optional[str] = None
+class UpdateUserInfo(BaseModel):
     name: Optional[str]  = None
-    email: Optional[EmailStr] = None
-    password: Optional[str] = None
-    imagePath: Optional[str] = None
     bio: Optional[str] = None
+
+
+class UpdateUserCredentials(BaseModel):
+    email: EmailStr
+    password: str
 
 # Esqueci a senha
 class ForgotPassword(BaseModel):

@@ -1,6 +1,6 @@
 const avatarFallbacker = (name: String) => {
     // Separa o nome em palavras
-    console.log(name)
+
     const words = name.split(' ');
 
     // Inicializa a variável para armazenar as iniciais
