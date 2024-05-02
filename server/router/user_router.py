@@ -65,11 +65,10 @@ def register_user(user: User):
     except HTTPException(status_code=500, detail="Ocorreu um erro ao registrar usuário") as error:
         raise error
 
-#* Atualizar name, username, bio
+#* Atualizar name, bio
 @user_router.put("/user/update/{id}")
 def update_user_info(id: str,user:UpdateUserInfo,current_user: str = Depends(UserController.get_current_user)):
         userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
-        
         if not userUpdated:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar informações")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")
@@ -77,13 +76,9 @@ def update_user_info(id: str,user:UpdateUserInfo,current_user: str = Depends(Use
 
 #* Atualizar email, senha
 @user_router.put("/user/update-credentials/{id}")
-def update_user_info(id: str,user:UpdateUserCredentials,current_user: str = Depends(UserController.get_current_user)):
+def update_user_credentials(id: str,user:UpdateUserCredentials,current_user: str = Depends(UserController.get_current_user)):
         userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
-        print("==================================")
-        print (user)
-        print("==================================")
-        userTeste = usersCollection.find_one({'_id': ObjectId(id)})
-        print (userTeste)
+        
         if not userUpdated:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar credenciais")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")
