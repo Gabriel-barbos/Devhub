@@ -4,9 +4,9 @@ def convertPost(post) -> dict:
         "content": post["content"],
         "media": post["media"],
         "author_username": post["author_username"],
+        "countLikes": post["countLikes"],
         "created_at": post["created_at"]
     }
-
 
 def convertPosts(posts) -> list:
     return [convertPost(post) for post in posts]
