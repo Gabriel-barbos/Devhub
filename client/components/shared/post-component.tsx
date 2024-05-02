@@ -13,8 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 
-const Post = () => {
-    const [likes, setLikes] = useState(1)
+const Post = ({user, likes_count, content, created_at}) => {
+    const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
 
     const like = () => {
@@ -30,14 +30,14 @@ const Post = () => {
                 <div className="flex items-center gap-2">
                     <Avatar className="hidden h-9 w-9 sm:flex">
                         {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                        <AvatarFallback>GM</AvatarFallback>
+                        <AvatarFallback>{user.name}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@gabrielmeira</CardTitle>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{user.username}</CardTitle>
                 </div>
-                <CardDescription>Agora</CardDescription>
+                <CardDescription>{created_at}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p className="text-base">Esse é o primeiro post</p>
+                <p className="text-base">{content}</p>
             </CardContent>
             <CardFooter className="flex items-center gap-4"> 
                 <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
