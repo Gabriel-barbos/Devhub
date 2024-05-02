@@ -8,23 +8,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Bolt, } from "lucide-react";
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import {Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessage,} from "@/components/ui/form"
+import {Dialog, DialogContent, DialogDescription,  DialogHeader, DialogTitle, DialogTrigger,} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
   
 const UserConfigForm = z.object({
@@ -34,17 +19,19 @@ const UserConfigForm = z.object({
   }),
 
 })
-const EditButton = () => {
+const EditButton = (id,email,password) => {
 
 
   const {toast} = useToast()
   const router = useRouter()
+  const token = sessionStorage.getItem("accessToken")
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const Userid = id
   const form = useForm<z.infer<typeof UserConfigForm>>({
     resolver: zodResolver(UserConfigForm),
     defaultValues: {
-    email: "",
-    password: ""
+    email: email,
+    password: password
     },
   })
 
@@ -55,9 +42,11 @@ const EditButton = () => {
   })
   try {
     UserConfigForm.parse(values)
-    const response = await fetch("http://localhost:8000/user/config",{
-    method: "POST",
-    headers: { "Content-Type": "application/json"},
+    const response = await fetch(`http://localhost:8000/user/update-credentials/${Userid}`,{
+    method: "PUT",
+    headers: { 
+      "Authorization":` Bearer ${token}` ,
+      "Content-Type": "application/json"},
     body: JSON.stringify(values)
     })
     console.log(values)
