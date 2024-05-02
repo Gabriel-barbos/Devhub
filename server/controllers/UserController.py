@@ -44,6 +44,9 @@ class UserController:
       username = token_dict['username']
       user = usersCollection.find_one({'username': username})
 
+      if not user:
+         raise credentials_exception
+
       return user
    
    def email_exists(email: str) -> bool:  

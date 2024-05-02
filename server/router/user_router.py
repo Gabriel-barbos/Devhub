@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter, HTTPException,FastAPI, Depends, status,File, UploadFile
-from models.User import User, UpdateUser
+from models.User import User, UpdateUserInfo, UpdateUserCredentials
 from utils.util import hash
 
 from db_config import usersCollection
@@ -65,13 +65,29 @@ def register_user(user: User):
     except HTTPException(status_code=500, detail="Ocorreu um erro ao registrar usuário") as error:
         raise error
 
-
+#* Atualizar name, username, bio
 @user_router.put("/user/update/{id}")
-def update_user(id: str,user:UpdateUser,current_user: str = Depends(UserController.get_current_user)):
+def update_user_info(id: str,user:UpdateUserInfo,current_user: str = Depends(UserController.get_current_user)):
         userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
+        
         if not userUpdated:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar informações")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")
+
+
+#* Atualizar email, senha
+@user_router.put("/user/update-credentials/{id}")
+def update_user_info(id: str,user:UpdateUserCredentials,current_user: str = Depends(UserController.get_current_user)):
+        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
+        print("==================================")
+        print (user)
+        print("==================================")
+        userTeste = usersCollection.find_one({'_id': ObjectId(id)})
+        print (userTeste)
+        if not userUpdated:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar credenciais")
+        return HTTPException(status_code=200, detail="Atualizado com sucesso")
+
 
 @user_router.delete("/user/delete/{id}")
 def delete_user(id:str,current_user: str = Depends(UserController.get_current_user)):
