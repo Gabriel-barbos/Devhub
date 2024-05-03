@@ -14,14 +14,14 @@ const Sidebar = () => {
                 <User />
                 Meu perfil
             </a>
-            <Button variant={"destructive"} className="w-[100px] hidden sm:block"asChild>
+            <Button variant={"destructive"} className="w-[100px] hidden sm:flex" asChild>
               <Link href="/logout">Sair</Link>
             </Button>
           </div>
           <div className="sm:mt-auto sm:block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
-              <EditButton></EditButton>
+              <EditButton />
          
             </div>
           </div>
