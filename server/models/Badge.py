@@ -3,6 +3,7 @@ import uuid
 from pydantic import BaseModel, EmailStr
 
 class Badge (BaseModel):
+    id: int
     name: str
     imagePath: Optional[str] = None
 

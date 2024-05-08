@@ -1,6 +1,6 @@
 def convertBadge(badge) -> dict:
     return {
-        "id": str(badge["_id"]),
+        "_id": badge["_id"],
         "name": badge["name"],
         "imagePath": badge["imagePath"]
     }

@@ -41,32 +41,30 @@ async def get_all_badges():
 
 
 @badge_router.put("/badge/update")
-def update_user_badge(badges: List[Badge], current_user: str = Depends(UserController.get_current_user)):
+def update_user_badge(badges_id: List[int], current_user: str = Depends(UserController.get_current_user)):
      try: 
-          id = current_user['_id']
-          print("====================================================")
-          # print(badges)
-          print("====================================================")
           
+          #* Pegar os badges do banco de dados pelo id
+          BadgeList = []
+          for id in badges_id:
+             badge = badgesCollection.find_one({"_id":id})
+             badge = convertBadge(badge)
+             BadgeList.append(badge)
+     
           #* Converter lista de Models para lista de Dict
-          if badges != None:
-             convertedBadgeList = []
-             for badge in badges:
+          convertedBadgeList = []
+          for badge in BadgeList:
                 convertedBadgeList.append(dict(badge))
-                badges = convertedBadgeList
-
-                
-          print("====================================================")
-          print(current_user["badges"])
-          print(badges)
-          print("====================================================")
-          updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set":{"badges":badges}})
+       
+          updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"badges":convertedBadgeList}})
           
           if not updatedUser:
                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao realizar update")
-          return "deu certo"
+          
+          return HTTPException(status_code=status.HTTP_200_OK, detail="Usuário atualizado com sucesso")
+     
      except HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado") as error:
-          return "error"
+          return error
 
 
 
