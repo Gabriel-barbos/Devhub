@@ -2,7 +2,7 @@ def convertBadge(badge) -> dict:
     return {
         "id": str(badge["_id"]),
         "name": badge["name"],
-        "imagePath": badge['imagePath']
+        "imagePath": badge["imagePath"]
     }
 
 

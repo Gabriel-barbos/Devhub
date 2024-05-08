@@ -25,6 +25,9 @@ def get_all_users():
     try:
         users = usersCollection.find()
         convertedUsers = convertUsers(users)
+
+        
+
         if convertedUsers == []:
              raise HTTPException(status_code=500, detail="Nenhum usuário adicionado")
              
