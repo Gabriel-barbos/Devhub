@@ -12,6 +12,7 @@ export default function Page({params} : {params: {username: string}}) {
     const [id, setId] = useState("")
     const [name, setName] = useState("")
     const [bio, setBio] = useState("")
+    const [imagePath, setImagePath] = useState("")
     const [hasUser, setHasUser] = useState(false)
     const [auth, setAuth] = useState(false);
     
@@ -42,6 +43,7 @@ export default function Page({params} : {params: {username: string}}) {
           setName(info.data.name)
           setBio(info.data.bio)
           setId(info.data.id)
+          setImagePath(info.data.imagePath)
           setHasUser(true)
           fetchPosts()
 
@@ -59,7 +61,7 @@ export default function Page({params} : {params: {username: string}}) {
     if(!hasUser){
         return (
             <div>
-                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} ></ProfileHeader>
+                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} ></ProfileHeader>
                 <div className="flex flex-col justify-center items-start gap-2">
                     <h1 className="text-5xl font-bold">Essa conta não existe</h1>
                     <span className="font-light text-slate-400">Tente procurar outra conta</span>
@@ -72,9 +74,9 @@ export default function Page({params} : {params: {username: string}}) {
 
     return (
         <div>
-        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id}></ProfileHeader>
+        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath}></ProfileHeader>
         <ProfileTabs />
-        <PostMaker name={name} username={params.username} />
+        {auth && <PostMaker name={name} username={params.username} />}
         {postsGroup.posts.length > 0 && 
           <PostsList name={name} posts={postsGroup.posts} />
         }
