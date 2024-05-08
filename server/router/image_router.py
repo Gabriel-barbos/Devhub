@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, HTTPException,FastAPI, File, UploadFile, Depends
+from fastapi import APIRouter,status, HTTPException,FastAPI, File, UploadFile, Depends
 
 from db_config import usersCollection
 from controllers.UserController import UserController
@@ -30,6 +30,9 @@ async def upload_image(file: UploadFile = File(...), current_user: str = Depends
 
 
     insert = usersCollection.find_one_and_update({'email': current_user['email']},{"$set": {'imagePath':filename}})
+
+    if not insert:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao atualizar imagem de perfil")
     return filename
 
 

@@ -30,24 +30,28 @@ class UserController:
          if username is None:
             raise credentials_exception
          token_data = TokenData(username=username)
+         return token_data
       except JWTError:
          raise credentials_exception
-      return token_data
+      
       
    def get_current_user(token: str = Depends(oauth2_scheme)):
       credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
                                             detail=f"Erro ao validar as credenciais", headers={"WWW-Authenticate": "Bearer"})
       
+      try:
+         token_dict = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+         if not token_dict:
+            return credentials_exception
+         username = token_dict['username']
+         user = usersCollection.find_one({'username': username})
 
-      token_dict = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+         if not user:
+            raise credentials_exception
 
-      username = token_dict['username']
-      user = usersCollection.find_one({'username': username})
-
-      if not user:
-         raise credentials_exception
-
-      return user
+         return user
+      except:
+         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao processar token (JWT decode error)")
    
    def email_exists(email: str) -> bool:  
          user = usersCollection.find_one({'email': email})
