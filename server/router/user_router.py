@@ -7,7 +7,7 @@ from db_config import usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
 from controllers.UserController import UserController
-from typing import Optional
+from typing import Optional, List
 app = FastAPI()
 
 
@@ -52,23 +52,33 @@ def get_one_user(username: str):
 @user_router.post("/user/register")
 def register_user(user: User):
     try:
+        #* Converter lista de Badges (Objetos) em um dicionario python 
+        if user.badges != None:
+             convertedBadgeList = []
+             for badge in user.badges:
+                convertedBadgeList.append(dict(badge))
+             user.badges = convertedBadgeList
         
+
         if UserController.email_exists(user.email):
             return HTTPException(status_code=404, detail="Email Já cadastrado")
+        
         #* hashing password
         user.password = hash(user.password)
+
         insert = usersCollection.insert_one(dict(user))
         if not insert:
             raise HTTPException(status_code=500, detail="Erro ao inserir")
         
-        return {"message": "Usuário cadastrado com sucesso"}
+        return HTTPException(status_code=201, detail="Usuario cadastrado com sucesso")
     except HTTPException(status_code=500, detail="Ocorreu um erro ao registrar usuário") as error:
-        raise error
+        return error
 
 #* Atualizar name, bio
 @user_router.put("/user/update/{id}")
 def update_user_info(id: str,user:UpdateUserInfo,current_user: str = Depends(UserController.get_current_user)):
-        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set" : dict(user)})
+        print(user)
+        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(current_user["_id"])}, {"$set" : dict(user)})
         if not userUpdated:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao atualizar informações")
         return HTTPException(status_code=200, detail="Atualizado com sucesso")

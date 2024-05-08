@@ -10,7 +10,7 @@ class User (BaseModel):
     password: str
     imagePath: Optional[str] = None
     bio: Optional[str] = None
-    badges: Optional[List[str]] = None
+    badges: Optional[List[Badge]] = None
 
 class UserLogin(BaseModel):
     username: EmailStr
