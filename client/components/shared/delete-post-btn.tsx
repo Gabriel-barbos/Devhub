@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
-export default function DeletePostBtn({id}) {
+export default function DeletePostBtn() {
     const [token, setToken] = useState("");
     const {toast} = useToast();
 
@@ -30,5 +30,5 @@ export default function DeletePostBtn({id}) {
         }
         
     }
-    return <Button variant={"destructive"}><Trash />Deletar</Button>
+    return <Button className="text-sm" variant={"destructive"}><Trash className="mr-2 h-4 w-4" />Deletar</Button>
 }

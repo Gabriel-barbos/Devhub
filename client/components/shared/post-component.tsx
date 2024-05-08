@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import relativeTime from "@/lib/utils/relativeTime";
+import DeletePostBtn from "./delete-post-btn";
 
 const Post = ({user, likes_count, content, created_at}) => {
     const [likes, setLikes] = useState(likes_count)
@@ -44,7 +45,8 @@ const Post = ({user, likes_count, content, created_at}) => {
             <CardFooter className="flex items-center gap-4"> 
                 <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
                     <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
-                </Button> 
+                </Button>
+                <DeletePostBtn /> 
                 <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
             </CardFooter>
         </Card>
