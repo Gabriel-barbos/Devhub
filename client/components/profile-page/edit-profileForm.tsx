@@ -17,19 +17,19 @@ const EditForm = z.object({
   bio: z.string(),
 })
 
-interface ProfileFormParams {
+
+interface IProfileForm {
   name: string,
-  desc: string, 
-  id: string, 
-  badges: String
+  bio: string,
+  id: string,
+  imagePath: string
 }
 
-const ProfileForm = ({name, desc, id, badges}: ProfileFormParams) => {
-
+const ProfileForm = ({name, bio, imagePath, id}: IProfileForm) => {
+  const [image, setImage] = useState('')
   // 1. Define your form.
   const {toast} = useToast()
   const router = useRouter()
-  const [formSubmitted, setFormSubmitted] = useState(false)
   const Userid = id
 
   const token = sessionStorage.getItem("accessToken")
@@ -38,15 +38,14 @@ const ProfileForm = ({name, desc, id, badges}: ProfileFormParams) => {
     resolver: zodResolver(EditForm),
     defaultValues: {
       name: name,
-      bio: desc
+      bio: bio
     },
   })
-
+function handleImage(e) {
+  console.log(e.target.files)
+  setImage(e.target.files[0])
+}
 const onSubmit = async (values: z.infer<typeof EditForm>) => {
-  toast({
-    title:"Sucesso",
-    description: "Informações atualizadas com sucesso",
-  })
   
 try{
   EditForm.parse(values)
@@ -54,25 +53,59 @@ try{
   const response = await fetch(`http://localhost:8000/user/update/${Userid}`,{
     method: 'PUT',
     headers:{
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
         "Authorization":` Bearer ${token}` ,
         "Content-Type": "application/json"} ,
     body: JSON.stringify(values)
   })
-  console.log(values)
+  if(response.ok) {
+    toast({
+      title:"Sucesso",
+      description: "Informações atualizadas com sucesso",
+    })
+    location.reload()
+  }
     } catch(error) {
       console.log(error)
-      console.log("token:" + token)
     }
-    setFormSubmitted(true)
-    location.reload()
 }
 
+
+
+const imageSubmit = async () => {
+  const formData = new FormData()
+  formData.append('image', image)
+  
+  try{
+   
+  
+    const response = await fetch(`http://localhost:8000/images/update`,{
+      method: 'PUT',
+      headers:{
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization":` Bearer ${token}` ,
+          "Content-Type": "multiform/form-data"} ,
+           body: formData
+    }) 
+    if(response.ok) {
+    toast({
+      title:"Imagem enviada",
+      description: "Informações atualizadas com sucesso",
+    })
+    location.reload()
+    }
+      } catch(error) {
+        console.log(error)
+      }
+  }
 
 
    return (
      <>
      <Form {...form}>
-       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" >
          
      <FormField
            control={form.control}
@@ -92,11 +125,10 @@ try{
            name="bio"
            render={({ field }) => (
              <FormItem>
-               <FormLabel>Descrição</FormLabel>
+               <FormLabel>Biografia</FormLabel>
                <FormControl>
-               <Textarea placeholder="Digite aqui sua descrição" id="message"{...field}  />
+               <Textarea placeholder="Digite aqui sua biografia" id="message"{...field}  />
                </FormControl>
-              
                <FormMessage />
              </FormItem>
            )}
@@ -104,22 +136,13 @@ try{
          <Button type="submit">Salvar Alterações</Button>
        </form>
      </Form>
-
-     <div className="grid w-full max-w-sm items-center gap 3.5 mt-5">
-      <Label htmlFor="picture">Insira uma foto de perfil</Label>
-      <Input id="picture" type="file" />
-    </div>
-    <div className="grid w-full max-w-sm items-center gap-3.5 mt-5">
-      <Label htmlFor="badges">Badges</Label>
-      <p>Insira os badges separados por ,</p>
-      <Input type="text" onChange={(e) => {
-        const badgesSess = e.target.value.split(", ");
-        sessionStorage.setItem("badges", JSON.stringify(badgesSess))
-      }} onKeyDown={(e) => {
-        if(e.key == "Enter") location.reload()
-      }} />
-    </div>
+     
     
+     <div className="grid w-full max-w-sm items-center gap 3.5 mt-5">
+      <Label htmlFor="picture">Insira sua foto de perfil</Label>
+      <Input type="file" name="image" onChange={handleImage}/>
+    </div>
+     
      </>
 );
 }

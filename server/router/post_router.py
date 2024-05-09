@@ -50,7 +50,7 @@ async def get_all_posts_of_user(username:str):
 
 
 
-
+ 
 #  media: List[UploadFile] = File(None, media_type="image/*")  // Usar mais tarde pra por imagem
 
 @post_router.post("/post")
@@ -98,5 +98,5 @@ async def delete_post(id:str,current_user: str = Depends(UserController.get_curr
    
      deletePost = await PostController.delete_post(id)
      if deletePost == False:
-         return HTTPException(status_code=500, detail="Erro ao deletar usuário")
-     return {"message": "Usuário deletado com sucesso!"}
+         return HTTPException(status_code=500, detail="Erro ao deletar post")
+     return {"message": "Post deletado com sucesso!"}

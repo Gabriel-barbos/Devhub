@@ -14,25 +14,19 @@ import  ProfileForm  from "./edit-profileForm"
 import avatarFallbacker from "@/lib/utils/avatarFallbacker"
 import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react"
-
+import { ProfileBadges } from "./badge/profile-badges"
   interface IProfileHeaderParams {
     name: string,
     username: string,
     bio: string, 
-    id: string, 
+    id: string,
+    imagePath: string,
     auth: boolean
   }
 
 
-  const ProfileHeader = ({name, username, bio, id, auth}: IProfileHeaderParams) => {
-      const [badges, setBadges] = useState([]);
-
-      useEffect(() => {
-        const badgesFromSession = sessionStorage.getItem("badges");
-        if(badgesFromSession){
-          setBadges(JSON.parse(badgesFromSession));
-        }
-      }, [])
+  const ProfileHeader = ({name, username, bio, id, auth, imagePath}: IProfileHeaderParams) => {
+      
 
       return (
         <>
@@ -47,11 +41,7 @@ import { useEffect, useState } from "react"
             <div>
               <div className="flex flex-col gap-2 mb-3">
                 <h1 className={"text-xl font-semibold"}>{name}</h1>
-                {badges.length > 0 && <div className="flex gap-1">
-                  {badges.map((badge) => {
-                    return <Badge variant={"outline"}>{badge}</Badge>
-                  })}
-                </div>}
+                <ProfileBadges />
               </div>
               <p className={"text-muted-foreground"}>@{username}</p>
             </div>
@@ -65,7 +55,7 @@ import { useEffect, useState } from "react"
                 <SheetHeader>
                   <SheetTitle>Edite Suas Informações</SheetTitle>
                   <SheetDescription>
-                    <ProfileForm name={name} desc={bio} id={id} badges={badges} />
+                    <ProfileForm name={name} bio={bio} id={id} imagePath={imagePath}/>
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
