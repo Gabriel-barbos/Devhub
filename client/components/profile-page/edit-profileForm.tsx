@@ -133,6 +133,7 @@ const imageSubmit = async () => {
              </FormItem>
            )}
      ></FormField>
+      <Button type="submit">Salvar Alterações</Button>
        </form>
      </Form>
      
@@ -141,8 +142,6 @@ const imageSubmit = async () => {
       <Label htmlFor="picture">Insira sua foto de perfil</Label>
       <Input type="file" name="image" onChange={handleImage}/>
     </div>
-    <Button type="submit">Salvar Alterações</Button>
-
      </>
 );
 }

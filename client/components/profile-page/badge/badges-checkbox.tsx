@@ -16,45 +16,52 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
+import { useState, useEffect } from "react"
 
 
- 
-const badges = [
-  {
-    id: "html",
-    label: "Html",
-  },
-  {
-    id: "css",
-    label: "Css",
-  },
-  {
-    id: "javascript",
-    label: "JavaScript",
-  }
-] as const
  
 const FormSchema = z.object({
-  badges: z.array(z.string())
+  badges: z.array(z.number()),
 })
  
-export function BadgesCheckbox() {
+export function BadgesCheckbox({defaultBadges}) {
+  const [token, setToken] = useState("")
+
+    useEffect(() => {
+        setToken(sessionStorage.getItem("accessToken") || "");
+    }, [token])
+
+
+
+  const badges = defaultBadges
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       badges: [],
     },
   })
- 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+
+  const onSubmit = async(data: z.infer<typeof FormSchema>) => {
+    FormSchema.parse(data)
+    let response = await fetch("http://localhost:8000/badge/update", {
+            method: "PUT",
+            headers: { 
+                "Access-Control-Allow-Headers" : "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json", 
+                "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify(data.badges)
+        })
+
+        if(response.ok){
+            toast({
+                variant: "default",
+                title: "Badges alteradas com sucesso."
+            })
+            location.reload()
+        }
   }
  
   return (
@@ -65,33 +72,33 @@ export function BadgesCheckbox() {
           name="badges"
           render={() => (
             <FormItem>
-              {badges.map((item) => (
+              {badges.map((item: object) => (
                 <FormField
-                  key={item.id}
+                  key={item._id}
                   control={form.control}
                   name="badges"
                   render={({ field }) => {
                     return (
                       <FormItem
-                        key={item.id}
+                        key={item._id} 
                         className="flex flex-row items-start space-x-3 space-y-0"
                       >
                         <FormControl>
                           <Checkbox
-                            checked={field.value?.includes(item.id)}
+                            checked={field.value?.includes(item._id)}
                             onCheckedChange={(checked) => {
                               return checked
-                                ? field.onChange([...field.value, item.id])
+                                ? field.onChange([...field.value, item._id])
                                 : field.onChange(
                                     field.value?.filter(
-                                      (value) => value !== item.id
+                                      (value) => value !== item._id
                                     )
                                   )
                             }}
                           />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          {item.label}
+                          {item.name}
                         </FormLabel>
                       </FormItem>
                     )

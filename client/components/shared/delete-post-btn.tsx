@@ -3,7 +3,11 @@ import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 
-export default function DeletePostBtn() {
+interface IDeletePostBtnParams {
+    postId: string
+}
+
+export default function DeletePostBtn({postId}: IDeletePostBtnParams) {
     const [token, setToken] = useState("");
     const {toast} = useToast();
 
@@ -15,11 +19,13 @@ export default function DeletePostBtn() {
     }, []) 
 
 
-    const handleDelete = async (postId: number) => {
+    const handleDelete = async () => {
         try {
             let response = await fetch(`http://localhost:8000/post/delete/${postId}`, {
                 method: "DELETE",
                 headers: { 
+                    "Access-Control-Allow-Headers" : "Content-Type",
+                    "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json", 
                     "Authorization": "Bearer " + token,
                 }
@@ -31,12 +37,7 @@ export default function DeletePostBtn() {
                     title: "Post deletado com sucesso"
                 })
                 location.reload()
-            } else {
-                toast({
-                    variant: "default",
-                    title: "Erro ao deletar o post"
-                })
-            }
+            } 
         } catch (error) {
             console.error("Error:", error);
             toast({
@@ -47,7 +48,7 @@ export default function DeletePostBtn() {
     }
 
 
-return <Button className="text-sm" variant={"destructive"} onClick={() => handleDelete(123)}> 
+return <Button className="text-sm" variant={"destructive"} onClick={() => handleDelete()}> 
 <Trash className="mr-2 h-4 w-4" />Deletar
 </Button>
 

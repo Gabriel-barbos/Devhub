@@ -15,19 +15,28 @@ import avatarFallbacker from "@/lib/utils/avatarFallbacker"
 import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react"
 import { ProfileBadges } from "./badge/profile-badges"
+import { BadgeDialog } from "./badge/badge-dialog"
+
+type Badge = {
+  _id: string
+  name: string
+  imagePath: string
+}
+
   interface IProfileHeaderParams {
     name: string,
     username: string,
     bio: string, 
     id: string,
     imagePath: string,
+    badges: (Badge)[] ,
+    defaultBadges: (string | number)[],
     auth: boolean
   }
 
 
-  const ProfileHeader = ({name, username, bio, id, auth, imagePath}: IProfileHeaderParams) => {
-      
-
+  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges}: IProfileHeaderParams) => {
+    
       return (
         <>
         <div className={"flex items-center w-full justify-between"}>
@@ -41,12 +50,12 @@ import { ProfileBadges } from "./badge/profile-badges"
             <div>
               <div className="flex flex-col gap-2 mb-3">
                 <h1 className={"text-xl font-semibold"}>{name}</h1>
-                <ProfileBadges />
               </div>
+              {auth && <ProfileBadges badges={badges}/>}  
               <p className={"text-muted-foreground"}>@{username}</p>
             </div>
           </div>
-          <div>
+          <div className="flex flex-col gap-1 items-start">
             <Sheet>
               <SheetTrigger>
               { auth && <Button variant="outline">Editar Perfil</Button> }
@@ -60,6 +69,7 @@ import { ProfileBadges } from "./badge/profile-badges"
                 </SheetHeader>
               </SheetContent>
             </Sheet>
+            <BadgeDialog badges={badges} defaultBadges={defaultBadges}/>
           </div>
         </div>
         <div className="mt-6 mb-8">

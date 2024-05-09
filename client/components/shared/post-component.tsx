@@ -16,7 +16,7 @@ import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import relativeTime from "@/lib/utils/relativeTime";
 import DeletePostBtn from "./delete-post-btn";
 
-const Post = ({user, likes_count, content, created_at}) => {
+const Post = ({user, likes_count, content, created_at, id}) => {
     const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
 
@@ -46,8 +46,8 @@ const Post = ({user, likes_count, content, created_at}) => {
                 <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
                     <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
                 </Button>
-                <DeletePostBtn /> 
                 <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
+                <DeletePostBtn postId={id}/> 
             </CardFooter>
         </Card>
     )
