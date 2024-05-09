@@ -90,7 +90,7 @@ export default function Page({params} : {params: {username: string}}) {
         <ProfileTabs />
         {auth && <PostMaker name={name} username={params.username} />}
         {postsGroup.posts.length > 0 && 
-          <PostsList name={name} posts={postsGroup.posts} />
+          <PostsList name={name} posts={postsGroup.posts} auth={auth} />
         } 
         
         </div>
