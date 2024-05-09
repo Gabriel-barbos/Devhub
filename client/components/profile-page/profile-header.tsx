@@ -32,18 +32,21 @@ type Badge = {
     badges: (Badge)[] ,
     defaultBadges: (string | number)[],
     auth: boolean
+    imageUrl: string
   }
 
 
-  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges}: IProfileHeaderParams) => {
-    
+  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl}: IProfileHeaderParams) => {
+      useEffect(() => {
+        return () => URL.revokeObjectURL(imageUrl)
+      }, [])
       return (
         <>
         <div className={"flex items-center w-full justify-between"}>
           <div className={"flex items-center gap-4"}>
             <div>
               <Avatar className="hidden h-20 w-20 sm:flex">
-                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                <AvatarImage src={imageUrl}/> 
                 <AvatarFallback className="text-2xl">{(name && typeof name == "string") && avatarFallbacker(name)}</AvatarFallback>
               </Avatar>
             </div>
