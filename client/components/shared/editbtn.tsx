@@ -19,7 +19,13 @@ const UserConfigForm = z.object({
   }),
 
 })
-const EditButton = (id,email,password) => {
+
+interface ConfigProfileParams {
+  email: String,
+  id: String, 
+  password: String
+}
+const EditButton = ({id,email,password}: ConfigProfileParams ) => {
 
 
   const {toast} = useToast()

@@ -17,7 +17,14 @@ const EditForm = z.object({
   bio: z.string(),
 })
 
-const ProfileForm = ({name, desc, id, badges}) => {
+interface ProfileFormParams {
+  name: string,
+  desc: string, 
+  id: string, 
+  badges: String
+}
+
+const ProfileForm = ({name, desc, id, badges}: ProfileFormParams) => {
 
   // 1. Define your form.
   const {toast} = useToast()
