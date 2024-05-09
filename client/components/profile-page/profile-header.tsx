@@ -54,7 +54,7 @@ type Badge = {
               <div className="flex flex-col gap-2 mb-3">
                 <h1 className={"text-xl font-semibold"}>{name}</h1>
               </div>
-              {auth && <ProfileBadges badges={badges}/>}  
+               <ProfileBadges badges={badges}/>
               <p className={"text-muted-foreground"}>@{username}</p>
             </div>
           </div>
@@ -72,7 +72,7 @@ type Badge = {
                 </SheetHeader>
               </SheetContent>
             </Sheet>
-            <BadgeDialog badges={badges} defaultBadges={defaultBadges}/>
+            { auth && <BadgeDialog badges={badges} defaultBadges={defaultBadges}/> }
           </div>
         </div>
         <div className="mt-6 mb-8">
