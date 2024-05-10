@@ -16,7 +16,7 @@ import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import relativeTime from "@/lib/utils/relativeTime";
 import DeletePostBtn from "./delete-post-btn";
 
-const Post = ({user, likes_count, content, created_at}) => {
+const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
     const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
 
@@ -32,7 +32,7 @@ const Post = ({user, likes_count, content, created_at}) => {
             <CardHeader className="flex items-center flex-row justify-between">
                 <div className="flex items-center gap-2">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                        {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                        <AvatarImage src={imageUrl} /> 
                         <AvatarFallback>{avatarFallbacker(user.name)}</AvatarFallback>
                     </Avatar>
                     <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{user.username}</CardTitle>
@@ -46,8 +46,8 @@ const Post = ({user, likes_count, content, created_at}) => {
                 <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
                     <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
                 </Button>
-                <DeletePostBtn /> 
                 <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
+                {auth && <DeletePostBtn postId={id}/>}
             </CardFooter>
         </Card>
     )

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
@@ -26,7 +26,8 @@ interface IProfileForm {
 }
 
 const ProfileForm = ({name, bio, imagePath, id}: IProfileForm) => {
-  const [image, setImage] = useState('')
+
+  const fileInputRef = useRef(null)
   // 1. Define your form.
   const {toast} = useToast()
   const router = useRouter()
@@ -41,10 +42,7 @@ const ProfileForm = ({name, bio, imagePath, id}: IProfileForm) => {
       bio: bio
     },
   })
-function handleImage(e) {
-  console.log(e.target.files)
-  setImage(e.target.files[0])
-}
+
 const onSubmit = async (values: z.infer<typeof EditForm>) => {
   
 try{
@@ -73,21 +71,22 @@ try{
 
 
 
-const imageSubmit = async () => {
-  const formData = new FormData()
-  formData.append('image', image)
-  
+const imageSubmit = async (event) => {
+  event.preventDefault()
+  const formData = new FormData();
+  const file = fileInputRef.current.files[0]
+  console.log(file)
+  formData.append('file', file)
   try{
-   
-  
     const response = await fetch(`http://localhost:8000/images/update`,{
       method: 'PUT',
       headers:{
           "Access-Control-Allow-Headers" : "Content-Type",
           "Access-Control-Allow-Origin": "*",
-          "Authorization":` Bearer ${token}` ,
-          "Content-Type": "multiform/form-data"} ,
-           body: formData
+          "Authorization":` Bearer ${token}`
+          },
+      body: formData
+    
     }) 
     if(response.ok) {
     toast({
@@ -133,16 +132,20 @@ const imageSubmit = async () => {
              </FormItem>
            )}
      ></FormField>
-         <Button type="submit">Salvar Alterações</Button>
+      <Button type="submit">Salvar Alterações</Button>
        </form>
      </Form>
      
     
      <div className="grid w-full max-w-sm items-center gap 3.5 mt-5">
+
+      <form onSubmit={imageSubmit} encType="multipart/form-data">
       <Label htmlFor="picture">Insira sua foto de perfil</Label>
-      <Input type="file" name="image" onChange={handleImage}/>
+      <Input type="file" name="file" ref={fileInputRef} accept="image/*"/>
+      <Button type="submit">Salvar foto</Button>
+      </form>
+      
     </div>
-     
      </>
 );
 }

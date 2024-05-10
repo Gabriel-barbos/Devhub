@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import { useToast } from "@/components/ui/use-toast"
 
-const PostMaker = ({name, username}) => {
+const PostMaker = ({name, username, imageUrl}) => {
 
     const [content, setContent] = useState("");
     const [token, setToken] = useState("");
@@ -51,7 +51,7 @@ const PostMaker = ({name, username}) => {
             <CardHeader className="flex items-center flex-row justify-between">
                 <div className="flex items-center gap-2">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                        {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                       <AvatarImage src={imageUrl} /> 
                         <AvatarFallback>{avatarFallbacker(name)}</AvatarFallback>
                     </Avatar>
                     <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{username}</CardTitle>
