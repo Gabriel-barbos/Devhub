@@ -95,8 +95,11 @@ async def update_post(id:str, post_request: Post, current_user: str = Depends(Us
 
 @post_router.delete("/post/delete/{id}")
 async def delete_post(id:str,current_user: str = Depends(UserController.get_current_user)):
-   
+   try:
      deletePost = await PostController.delete_post(id)
      if deletePost == False:
          return HTTPException(status_code=500, detail="Erro ao deletar post")
-     return {"message": "Post deletado com sucesso!"}
+     return HTTPException(status_code=status.HTTP_200_OK, detail="Post deletado com sucesso!")
+   except:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao deletar post")
+     

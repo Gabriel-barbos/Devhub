@@ -7,5 +7,5 @@ def convertBadge(badge) -> dict:
 
 
 def convertBadges(badges) -> list:
-    return [convertBadge(badges) for badges in badges]
+    return [convertBadge(badge) for badge in badges]
 

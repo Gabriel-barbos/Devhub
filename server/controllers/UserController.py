@@ -51,7 +51,7 @@ class UserController:
 
          return user
       except:
-         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao processar token (JWT decode error)")
+         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Erro ao processar token (JWT decode error)")
    
    def email_exists(email: str) -> bool:  
          user = usersCollection.find_one({'email': email})
