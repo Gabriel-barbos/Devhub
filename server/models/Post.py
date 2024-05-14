@@ -1,13 +1,20 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+
+
+
+
 
 class Post (BaseModel):
     content: str
     media: Optional[str] = None
     author_username: Optional[str] =None
     countLikes: Optional[int] = None
+    countComments: Optional[int] = None
     created_at: Optional[datetime]= None
+    reply_to: Optional[str] = None
+
 
 class Article (BaseModel):
     author_username: str

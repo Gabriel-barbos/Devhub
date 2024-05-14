@@ -6,12 +6,11 @@ from bson import ObjectId
 from db_config import postsCollection,usersCollection
 from controllers.PostController import PostController
 from controllers.UserController import UserController
-app = FastAPI()
 import json
 
 from serializer.post_serializer import convertPost,convertPosts
 from serializer.user_serializer import convertUser,convertUsers 
-
+from typing import List
 
 
 post_router = APIRouter(tags=['Posts'])
@@ -27,7 +26,7 @@ async def get_all_posts():
              
         return posts
     except HTTPException as error:
-         raise error
+         return error
     
 
 @post_router.get("/user/{username}/posts")
@@ -103,3 +102,50 @@ async def delete_post(id:str,current_user: str = Depends(UserController.get_curr
    except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao deletar post")
      
+
+@post_router.post("/post/comment/{actualPostId}")
+def comment_post(actualPostId: str, commentPost: Post,current_user: str = Depends(UserController.get_current_user)):
+      try:
+          
+          commentPost.created_at =  datetime.now()
+          commentPost.author_username = current_user['username']
+          commentPost.reply_to = actualPostId
+
+
+          addComment = postsCollection.insert_one(dict(commentPost))
+      
+          if not addComment:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                    detail="Erro ao comentar")
+          
+          return HTTPException(status_code=status.HTTP_200_OK, 
+                               detail="Comentario adicionado!")
+
+      except: 
+           return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Erro ao comentar post")
+      
+@post_router.get("/post/{id}/comments")
+def get_all_comments_of_post(actualPostId: str):
+     try:
+          
+          comments = postsCollection.find({"reply_to": actualPostId})
+          convertedComments = convertPosts(comments)
+          print("==================================================") 
+          print(convertedComments) 
+          print("==================================================") 
+
+
+
+
+
+      
+          if not comments:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                    detail="Erro ao comentar")
+          
+          return convertedComments
+
+     except: 
+           return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Erro inesperado")

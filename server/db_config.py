@@ -4,7 +4,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from serializer.badge_serializer import convertBadge,convertBadges
 # Create a new client and connect to the server
-client = MongoClient(DBCONNECTIONSTRING, server_api=ServerApi('1'))
+client = MongoClient("mongodb://localhost:27017/", server_api=ServerApi('1'))
 
 db = client.devhub
 

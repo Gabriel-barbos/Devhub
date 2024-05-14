@@ -36,6 +36,11 @@ class PostController:
             return True
         return False
         
+    # async def comment_post(id) -> bool:
+    #     try:
+    #         addComment = postsCollection.find_one_and_update({"_id": ObjectId(id)},{"$set": { "comments": id })
+            
+    #     except:
     
 
     
