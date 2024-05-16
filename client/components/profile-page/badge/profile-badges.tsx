@@ -12,7 +12,7 @@ interface IProfileBadgesParams {
 
 export function ProfileBadges({badges}: IProfileBadgesParams) {
     return (
-        <div className="w-full flex flex-row flex-wrap gap-1">
+        <div className="w-full flex flex-row flex-wrap gap-1 my-3">
             {badges !== null && badges.map((badge) => {
                 return <Badge>{badge.name}</Badge>
             })}

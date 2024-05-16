@@ -61,24 +61,28 @@ type Badge = {
                 </Avatar>
               </div>
               <div>
-                <div className="flex flex-col gap-2 mb-1">
+                <div className="flex flex-col gap-2 ">
                   <div className="flex items-center justify-between">
+                    <div className="flex gap-2">
                     <h1 className="text-xl font-semibold">{name}</h1>
-                    <Button variant={isFollowing ? "secondary": "outline"} onClick={handleFollowClick} className="px-3 ml-2 py-1">
-                    {isFollowing ? 'Seguindo' : 'Seguir'}
-                    </Button>                  </div>
+                    <p className={"text-muted-foreground"}>@{username}</p>
+                    </div>
+                  </div>
                 </div>
+               
                 <ProfileBadges badges={badges} />
-                <p className={"text-muted-foreground"}>@{username}</p>
                 
-                <div className="top-16">
-                <p className={"text-muted-foreground"}>seguidores: 0</p>
-                <p className={"text-muted-foreground"}>seguindo: 0</p>
+                <div className="top-16 flex gap-2">
+                <p><span className={"text-muted-foreground"}>seguidores:</span> 0</p>
+                <p><span className={"text-muted-foreground"}>seguindo:</span> 0</p>
                 </div>
               </div>
             </div>
             
             <div className="flex flex-col gap-1 items-start">
+              <Button variant={isFollowing ? "secondary": "outline"} onClick={handleFollowClick} >
+                      {isFollowing ? 'Seguindo' : 'Seguir'}
+              </Button>                  
               <Sheet>
                 <SheetTrigger>
                   {auth && <Button variant="outline">Editar Perfil</Button>}
