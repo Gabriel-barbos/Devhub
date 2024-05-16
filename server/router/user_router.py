@@ -104,6 +104,29 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
          return HTTPException(status_code=500, detail="Erro ao deletar usuário")
      return {"message": "Usuário deletado com sucesso!"}
 
+
+@user_router.get("/user/followers_get")
+def get_followers(current_user: dict = Depends(UserController.get_current_user)):
+    user_id = current_user["_id"]
+
+    # Busca o usuário pelo ID
+    user = usersCollection.find_one({"_id": ObjectId(current_user['id'])})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    followers = usersCollection.find_one({"_id":id},{"_id": 0, "followers": 1})
+    #* Pegar os seguidores atuais no banco de dados e remover 
+    FollowerList = []
+    for follow in followers['followers']:
+        FollowerList.append(follow)
+
+    if not follow:
+        return []
+
+
+    return followers
+
+
 @user_router.get("/user/non-follower/")
 def get_non_follower_list(current_user: str = Depends(UserController.get_current_user)):
         id = ObjectId(current_user["_id"])
