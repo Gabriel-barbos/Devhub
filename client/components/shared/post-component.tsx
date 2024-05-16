@@ -19,6 +19,13 @@ import DeletePostBtn from "./delete-post-btn";
 const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
     const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
+   
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    const handleFollowClick = () => {
+        setIsFollowing(!isFollowing);
+      };
+      
 
     const like = () => {
         const newLikes = liked ? likes - 1 : likes + 1;
@@ -26,7 +33,6 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
         setLiked(!liked);
     };
     
-
     return (
         <Card>
             <CardHeader className="flex items-center flex-row justify-between">
@@ -35,7 +41,12 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
                         <AvatarImage src={imageUrl} /> 
                         <AvatarFallback>{avatarFallbacker(user.name)}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{user.username}</CardTitle>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{user.username}
+                    
+                    <Button variant={isFollowing ? "secondary": "outline"} onClick={handleFollowClick} className="px-3 ml-2 py-1">
+                    {isFollowing ? 'Seguindo' : 'Seguir'}
+                    </Button>
+                    </CardTitle>
                 </div>
                 <CardDescription>{relativeTime(created_at)}</CardDescription>
             </CardHeader>
