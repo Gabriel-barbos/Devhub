@@ -105,7 +105,7 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
      return {"message": "Usuário deletado com sucesso!"}
 
 
-@user_router.get("/users/followers/")
+@user_router.get("/user/followers/")
 def get_followers(current_user = Depends(UserController.get_current_user)):
     try:
         #* Busca o usuário pelo ID
