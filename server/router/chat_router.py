@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException,FastAPI, Depends, status,File, UploadFile
+from fastapi import APIRouter,requests, HTTPException,FastAPI, Depends, status,File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
 
-import requests
 
 chat_router = APIRouter(tags=['Chat'])
 
