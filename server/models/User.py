@@ -11,6 +11,8 @@ class User (BaseModel):
     imagePath: Optional[str] = None
     bio: Optional[str] = None
     badges: Optional[List[Badge]] = None
+    followers: Optional[List[str]] = None
+    following: Optional[List[str]] = None
 
 class UserLogin(BaseModel):
     username: EmailStr

@@ -26,8 +26,6 @@ def get_all_users():
         users = usersCollection.find()
         convertedUsers = convertUsers(users)
 
-        
-
         if convertedUsers == []:
              raise HTTPException(status_code=500, detail="Nenhum usuário adicionado")
              
@@ -106,3 +104,39 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
          return HTTPException(status_code=500, detail="Erro ao deletar usuário")
      return {"message": "Usuário deletado com sucesso!"}
 
+@user_router.get("/user/non-follower/")
+def non_follower_list(current_user: str = Depends(UserController.get_current_user)):
+        id = ObjectId(current_user["_id"])
+
+        #* Pegar todos os ids de usuários q n sejam o current user
+        all_users_id = usersCollection.distinct("_id",{"_id": {"$ne": id}})
+
+        query = {"followerlist": {"$exists": False}}
+        result = usersCollection.find(query, {"_id": 1})
+
+        print("===========================================================")
+        print(all_users_id)
+        print("===========================================================")
+        
+        if all_users_id == []:
+            return "sem nada na lista"
+
+        return {"data"}
+
+@user_router.post("/user/add-follow/{id}")
+def add_follow(id:str, current_user:str = Depends(UserController.get_current_user)):
+    
+    FollowerList = []
+    follow = usersCollection.find_one({"":id})
+    badge = convertBadge(badge)
+    BadgeList.append(badge)
+     
+    #* Converter lista de Models para lista de Dict
+    convertedBadgeList = []
+    for badge in BadgeList:
+        convertedBadgeList.append(dict(badge))
+
+
+
+    result = usersCollection.insert_one()
+    return "oi"

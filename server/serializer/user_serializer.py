@@ -2,6 +2,18 @@ from serializer.badge_serializer import convertBadges
 
 def convertUser(user) -> dict:
 
+    if user["following"] != None:
+             convertedFollowingList = []
+             for follower in user["following"]:
+                convertedFollowingList.append(follower)
+             user["following"] = convertedFollowingList
+
+    if user["followers"] != None:
+             convertedFollowerList = []
+             for follow in user["followers"]:
+                convertedFollowerList.append(follow)
+             user["followers"] = convertedFollowerList
+
 
     if user["badges"] != None:
              convertedBadgeList = []
@@ -17,7 +29,9 @@ def convertUser(user) -> dict:
         "password": user["password"],
         "imagePath": user["imagePath"],
         "bio": user["bio"],
-        "badges": user["badges"]
+        "badges": user["badges"],
+        "following": user["following"],
+        "followers": user["followers"]
     }
 
 
