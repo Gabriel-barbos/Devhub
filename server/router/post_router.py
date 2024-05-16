@@ -48,6 +48,20 @@ async def get_all_posts_of_user(username:str):
           return error
 
 
+@post_router.get("/post/{id}/")
+def get_one_post(id:str):
+     try:
+          post = postsCollection.find_one({"_id": ObjectId(id)})
+          if not post:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                           detail="Erro ao consultar post")
+          convertedPost = convertPost(post)
+
+          return convertedPost
+     except:
+          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                           detail="Um erro inesperado ocorreu ao consultar post")
+
 
  
 #  media: List[UploadFile] = File(None, media_type="image/*")  // Usar mais tarde pra por imagem
@@ -135,11 +149,6 @@ def get_all_comments_of_post(actualPostId: str):
           print(convertedComments) 
           print("==================================================") 
 
-
-
-
-
-      
           if not comments:
                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                     detail="Erro ao comentar")
