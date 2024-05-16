@@ -96,7 +96,9 @@ export default function Page({params} : {params: {id: string}}) {
             <Card>
                 <CardHeader className="flex items-center flex-row justify-between">
                     <div className="flex items-center gap-2">
-                        <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{post.author_username}</CardTitle>
+                        <Link href={`/${post.author_username}`}>
+                            <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{post.author_username}</CardTitle>
+                        </Link>
                     </div>
                     <CardDescription>{post.created_at && relativeTime(post.created_at)}</CardDescription>
                 </CardHeader>
@@ -113,7 +115,7 @@ export default function Page({params} : {params: {id: string}}) {
                             <div key={i} className={"flex flex-col gap-1 mb-4"}>
                                 <span className="text-xs text-muted-foreground">@{comment.author_username} disse:</span>
                                 <p>{comment.content}</p>
-                                <Link href={`/post/${comment.id}`} className="text-xs text-muted-foreground flex align-center gap-2 text-sm">-> Ver comentários</Link>
+                                <Link href={`/post/${comment.id}`} className="text-xs text-sky-400 flex align-center gap-2 text-sm">-> Ver comentários</Link>
                             </div>
                         )}
                     </div>

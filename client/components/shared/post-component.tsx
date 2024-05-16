@@ -8,7 +8,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
-import { ThumbsUp } from "lucide-react";
+import { MessageCircleMore, ThumbsUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
@@ -75,8 +75,12 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
                     </Button>
                     <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
                     {auth && <DeletePostBtn postId={id}/>}
+                    <Link href={`/post/${id}`} className="text-muted-foreground flex items-center gap-2 text-sm">
+                        <MessageCircleMore color="#7A7A81"/>
+                        Ver comentários
+                    </Link>
                 </div>
-                <Link href={`/post/${id}`} className="text-muted-foreground flex align-center gap-2 text-sm">Ver comentários</Link>
+                
             </CardFooter>
         </Card>
     )
