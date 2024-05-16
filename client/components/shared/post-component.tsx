@@ -11,14 +11,20 @@ import {
 import { ThumbsUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import relativeTime from "@/lib/utils/relativeTime";
 import DeletePostBtn from "./delete-post-btn";
+import Link from 'next/link'
 
-const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
+const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply_to}) => {
+    interface IPostReplied {
+        author_username?: string
+    }
+
     const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
+    const [postReplied, setPostReplied] = useState<IPostReplied>({})
    
     const [isFollowing, setIsFollowing] = useState(false);
 
@@ -32,6 +38,14 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
         setLikes(newLikes);
         setLiked(!liked);
     };
+
+    useEffect(() => {
+        if(reply_to) {
+            fetch(`http://127.0.0.1:8000/post/${reply_to}`)
+            .then((res) => res.json())
+            .then((data) => setPostReplied(data))
+        }
+    }, [reply_to])
     
     return (
         <Card>
@@ -52,13 +66,17 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl}) => {
             </CardHeader>
             <CardContent>
                 <p contentEditable={true} className="text-base">{content}</p>
+                {reply_to && <p className="text-xs text-muted-foreground mt-2">-> Respondendo a <Link href={`/post/${reply_to}`} className="text-sky-400">@{postReplied["author_username"]}</Link></p>}
             </CardContent>
-            <CardFooter className="flex items-center gap-4"> 
-                <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
-                    <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
-                </Button>
-                <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
-                {auth && <DeletePostBtn postId={id}/>}
+            <CardFooter className="flex flex-col gap-2 !items-start"> 
+                <div className="flex items-center gap-4">
+                    <Button className="text-sm" variant={liked ? "secondary" : "outline"} onClick={like}>
+                        <ThumbsUp className="mr-2 h-4 w-4" /> {liked ? "Curtido" : "Curtir"}
+                    </Button>
+                    <p className={"text-muted-foreground text-sm"}>{likes} like{likes != 1 && "s"}</p>
+                    {auth && <DeletePostBtn postId={id}/>}
+                </div>
+                <Link href={`/post/${id}`} className="text-muted-foreground flex align-center gap-2 text-sm">Ver comentários</Link>
             </CardFooter>
         </Card>
     )

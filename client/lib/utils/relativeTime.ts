@@ -1,4 +1,4 @@
-function relativeTime(data: Date): string {
+function relativeTime(data: string | Date): string {
     data = new Date(data);
     const agora = new Date();
     const diferencaEmMilissegundos = agora.getTime() - data.getTime();
