@@ -105,47 +105,23 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
      return {"message": "Usuário deletado com sucesso!"}
 
 
-@user_router.get("/user/followers_get")
-def get_followers(current_user: dict = Depends(UserController.get_current_user)):
-    user_id = current_user["_id"]
+@user_router.get("/users/followers/")
+def get_followers(current_user = Depends(UserController.get_current_user)):
+    try:
+        #* Busca o usuário pelo ID
+        user = usersCollection.find_one({"_id": ObjectId(current_user['_id'])})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
 
-    # Busca o usuário pelo ID
-    user = usersCollection.find_one({"_id": ObjectId(current_user['id'])})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    followers = usersCollection.find_one({"_id":id},{"_id": 0, "followers": 1})
-    #* Pegar os seguidores atuais no banco de dados e remover 
-    FollowerList = []
-    for follow in followers['followers']:
-        FollowerList.append(follow)
-
-    if not follow:
-        return []
+        followers = usersCollection.find_one({"_id" : ObjectId(current_user['_id'])},{"_id": 0, "followers": 1})
 
 
-    return followers
-
-
-@user_router.get("/user/non-follower/")
-def get_non_follower_list(current_user: str = Depends(UserController.get_current_user)):
-        id = ObjectId(current_user["_id"])
-
-        #* Pegar todos os ids de usuários q n sejam o current user
-        all_users_id = usersCollection.distinct("_id",{"_id": {"$ne": id}})
-
-        query = {"followerlist": {"$exists": False}}
-        result = usersCollection.find(query, {"_id": 1})
-
-        print("===========================================================")
-        print(all_users_id)
-        print("===========================================================")
+        if followers['followers'] == []:
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum seguidor para ser removido")
         
-        if all_users_id == []:
-            return "sem nada na lista"
-
-        return {"data"}
-
+        return followers
+    except:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
 
 
 @user_router.post("/user/add-follow/{idFollow}")
