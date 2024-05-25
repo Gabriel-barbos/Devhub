@@ -7,7 +7,6 @@ from db_config import usersCollection
 from serializer.user_serializer import convertUser, convertUsers
 from bson import ObjectId
 from controllers.UserController import UserController
-from typing import Optional, List
 app = FastAPI()
 
 
@@ -117,7 +116,7 @@ def get_followers(current_user = Depends(UserController.get_current_user)):
 
 
         if followers['followers'] == []:
-                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum seguidor para ser removido")
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Você ainda não segue ninguém!")
         
         return followers
     except:
@@ -133,11 +132,12 @@ def add_follower(idFollow:str, current_user:str = Depends(UserController.get_cur
 
         #* Pegar os seguidores atuais no banco de dados e inserir o novo
         FollowerList = []
-        for follow in followers['followers']:
-            if follow == idFollow:
-                return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Usuário já está adicionado")
-            FollowerList.append(follow)
-                 
+        if followers['followers'] != None:
+            for follow in followers['followers']:
+                if follow == idFollow:
+                    return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Usuário já está adicionado")
+                FollowerList.append(follow)
+        
         FollowerList.append(idFollow)
 
 
