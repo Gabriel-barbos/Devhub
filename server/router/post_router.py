@@ -158,3 +158,64 @@ def get_all_comments_of_post(actualPostId: str):
      except: 
            return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Erro inesperado")
+     
+
+@post_router.post("/post/like/{id}")
+def like_post(id:str, current_user: str = Depends(UserController.get_current_user)):
+     try:
+          userId = ObjectId(current_user['_id'])
+          postId = id
+
+          postLikes = postsCollection.find_one({"_id":ObjectId(postId)},{"_id": 0, "likes": 1})
+
+          # #* Pegar os seguidores atuais no banco de dados e inserir o novo
+          likes = []
+          if postLikes["likes"] != None:
+               for idLike in postLikes['likes']:
+                    if idLike == str(userId):
+                         return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="post já curtido")
+                    likes.append(idLike)
+          likes.append(str(userId))
+
+          if likes != []:
+            likes_count = len(likes)
+
+          updatedLike =  postsCollection.find_one_and_update({"_id": ObjectId(postId)}, {"$set":{"likes":likes,"likes_count":likes_count}})
+          
+          print(likes_count)
+
+          if not updatedLike:
+               return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                   detail="Erro ao curtir post")
+          
+          return HTTPException(status_code=status.HTTP_200_OK,
+                                   detail="Post curtido!")
+     except:
+          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Ocorreu um erro inesperado ao curtir post ")
+     
+
+@post_router.post("/post/dislike/{id}")
+def dislike_post(id:str, current_user: str = Depends(UserController.get_current_user)):
+     try:
+          postId = id
+          postLikes = postsCollection.find_one({"_id":ObjectId(postId)},{"_id": 0, "likes": 1})
+          
+          userId = current_user["_id"]
+          likes = []
+          if postLikes["likes"] != None:
+               for idLike in postLikes['likes']:
+                    if idLike != str(userId):
+                         likes.append(idLike)
+          likes_count = len(likes)
+
+          updatedLike =  postsCollection.find_one_and_update({"_id": ObjectId(postId)}, {"$set":{"likes":likes,"likes_count":likes_count}})
+          
+          if not updatedLike:
+                    return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Erro ao curtir post")
+          return HTTPException(status_code=status.HTTP_200_OK,
+                                        detail="Curtida retirada!")
+     except:
+          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Ocorreu um erro inesperado ao descurtir")

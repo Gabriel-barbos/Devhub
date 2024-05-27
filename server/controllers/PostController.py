@@ -35,6 +35,14 @@ class PostController:
         if deletePost:
             return True
         return False
+    
+    def count_likes(post_id):
+        post = postsCollection.find_one({"_id": post_id}, {"likes": 1, "_id": 0})
+
+        if post["likes"] != None:
+            likes_count = len(post["likes"])
+            return likes_count
+        return None
         
     # async def comment_post(id) -> bool:
     #     try:

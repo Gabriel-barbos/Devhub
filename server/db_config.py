@@ -12,6 +12,8 @@ usersCollection = db['users']
 codesCollection = db['codes']
 postsCollection = db['posts']
 badgesCollection = db['badges']
+messagesCollection = db['messages']
+
 mylist = [
   { "_id": 1,"name": "JavaScript", "imagePath": "Apple st 652"},
   { "_id": 2,"name": "React", "imagePath": "Mountain 21"},
