@@ -66,7 +66,7 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
             </CardHeader>
             <CardContent>
                 <p contentEditable={true} className="text-base">{content}</p>
-                {reply_to && <p className="text-xs text-muted-foreground mt-2">-> Respondendo a <Link href={`/post/${reply_to}`} className="text-sky-400">@{postReplied["author_username"]}</Link></p>}
+                {reply_to && <p className="text-xs text-muted-foreground mt-2">-{">"} Respondendo a <Link href={`/post/${reply_to}`} className="text-sky-400">@{postReplied["author_username"]}</Link></p>}
             </CardContent>
             <CardFooter className="flex flex-col gap-2 !items-start"> 
                 <div className="flex items-center gap-4">

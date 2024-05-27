@@ -80,9 +80,12 @@ type Badge = {
             </div>
             
             <div className="flex flex-col gap-1 items-start">
+              {!auth &&    
               <Button variant={isFollowing ? "secondary": "outline"} onClick={handleFollowClick} >
                       {isFollowing ? 'Seguindo' : 'Seguir'}
-              </Button>                  
+              </Button>     
+              }
+                        
               <Sheet>
                 <SheetTrigger>
                   {auth && <Button variant="outline">Editar Perfil</Button>}
