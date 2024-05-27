@@ -10,7 +10,8 @@ class Post (BaseModel):
     content: str
     media: Optional[str] = None
     author_username: Optional[str] =None
-    countLikes: Optional[int] = None
+    likes: List[Optional[str]] = None
+    likes_count: Optional[int] = None
     countComments: Optional[int] = None
     created_at: Optional[datetime]= None
     reply_to: Optional[str] = None

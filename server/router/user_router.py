@@ -9,8 +9,6 @@ from bson import ObjectId
 from controllers.UserController import UserController
 app = FastAPI()
 
-
-
 user_router = APIRouter(tags=['User'])
 
 @user_router.get("/")
@@ -178,3 +176,9 @@ def remove_follower(idFollower:str, current_user:str = Depends(UserController.ge
         return HTTPException(status_code=status.HTTP_202_ACCEPTED, detail="Seguidor removido com sucesso!")
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")
+
+@user_router.post("/feed")
+def feed(current_user: str = Depends(UserController.get_current_user)):
+    
+    
+    return "oi"
