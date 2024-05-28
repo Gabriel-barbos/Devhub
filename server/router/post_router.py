@@ -145,10 +145,7 @@ def get_all_comments_of_post(actualPostId: str):
           
           comments = postsCollection.find({"reply_to": actualPostId})
           convertedComments = convertPosts(comments)
-          print("==================================================") 
-          print(convertedComments) 
-          print("==================================================") 
-
+         
           if not comments:
                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                     detail="Erro ao comentar")
@@ -161,7 +158,7 @@ def get_all_comments_of_post(actualPostId: str):
      
 
 @post_router.post("/post/like/{id}")
-def like_post(id:str, current_user: str = Depends(UserController.get_current_user)):
+def like_post(id:str):
      try:
           userId = ObjectId(current_user['_id'])
           postId = id
@@ -196,7 +193,7 @@ def like_post(id:str, current_user: str = Depends(UserController.get_current_use
      
 
 @post_router.post("/post/dislike/{id}")
-def dislike_post(id:str, current_user: str = Depends(UserController.get_current_user)):
+def dislike_post(id:str):
      try:
           postId = id
           postLikes = postsCollection.find_one({"_id":ObjectId(postId)},{"_id": 0, "likes": 1})
@@ -219,3 +216,15 @@ def dislike_post(id:str, current_user: str = Depends(UserController.get_current_
      except:
           return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Ocorreu um erro inesperado ao descurtir")
+     
+@post_router.get("/post/like-list/{postId}")
+def get_like_list(postId:str):
+     
+     post = postsCollection.find_one({"_id": ObjectId(postId)}, {"likes": 1, "_id": 0})
+     lista = post["likes"]
+
+     result = usersCollection.find({"_id": {"$in": lista}}, {"_id": 1, "username": 1, "name": 1})
+     result = convertUsers(result)
+     print("=======================")
+     print(result)
+     return post['likes']
