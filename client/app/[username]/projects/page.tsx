@@ -115,7 +115,7 @@ export default function Page({params} : {params: {username: string}}) {
     return (
         <div>
         <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
-        <ProfileTabs username={params.username} active="posts" />
+        <ProfileTabs username={params.username} active={"projects"}/>
         {auth && <PostMaker name={name} username={params.username} imageUrl={imageUrl}/>}
         {postsGroup.posts.length > 0 && 
           <PostsList name={name} posts={postsGroup.posts} auth={auth} imageUrl={imageUrl} />

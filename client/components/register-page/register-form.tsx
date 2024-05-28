@@ -49,16 +49,17 @@ export function RegisterForm() {
 
 
   const onSubmit = async (values: z.infer<typeof User>) => {
-    toast({
-    title: "Sucesso.",
-    description: "Você foi registrado!",
-  })
+    
   try {
     User.parse(values)
     const response = await fetch("http://localhost:8000/user/register",{
     method: "POST",
     headers: { "Content-Type": "application/json"},
     body: JSON.stringify(values)
+    })
+    toast({
+      title: "Sucesso.",
+      description: "Você foi registrado!",
     })
     console.log(values)
     } catch(error) {
@@ -137,7 +138,7 @@ export function RegisterForm() {
                 <Input placeholder="" type="password" {...field} />
               </FormControl>
               <FormDescription>
-                Insira uma senha segura.
+                Insira uma senha com 6 ou mais caracteres
               </FormDescription>
               <FormMessage />
             </FormItem>
