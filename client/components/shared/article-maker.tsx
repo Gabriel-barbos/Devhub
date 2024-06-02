@@ -65,7 +65,7 @@ const ArticleMaker = ({name, username, imageUrl}) => {
             <Textarea value={content} onChange={(e) => {setContent(e.target.value)}} placeholder="Publique aqui seu artigo" className={"border-0 focus:!ring-transparent text-base"} />
         </CardContent>
         <CardFooter className="flex items-center gap-4"> 
-            <Button className="text-sm" variant={"default"} onClick={handlePublish}>
+            <Button className="text-sm" variant={"default"} >
                 Publicar <SendHorizontal className="ml-2 h-4 w-4" /> 
             </Button> 
             {/* <p className={"text-muted-foreground text-sm"}>{likes} like{likes > 1 && "s"}</p> */}
