@@ -109,17 +109,14 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
 def get_followers(current_user = Depends(UserController.get_current_user)):
     try:
         #* Busca o usuário pelo ID
-        user = usersCollection.find_one({"_id": ObjectId(current_user['_id'])})
+        user = current_user
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        followers = usersCollection.find_one({"_id" : ObjectId(current_user['_id'])},{"_id": 0, "followers": 1})
-
-
-        if followers['followers'] == []:
+        if user['followers'] == []:
                 return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Você ainda não segue ninguém!")
         
-        return followers
+        return user['followers']
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
 
@@ -134,7 +131,7 @@ def follow(idFollow:str, current_user:str = Depends(UserController.get_current_u
                                 detail="Você não pode se seguir")
 
 
-        user = usersCollection.find_one({"_id":ObjectId(id)})
+        user = current_user
 
         #* Pegar os seguidores atuais no banco de dados e inserir o novo
         followingList = []
@@ -180,15 +177,14 @@ def follow(idFollow:str, current_user:str = Depends(UserController.get_current_u
 # * idFollower é a pessoa que o current user vai deixar de seguir
 def unfollow(idFollower:str, current_user:str = Depends(UserController.get_current_user)):
     try:
-        # * Retira um seguidor da lista do current user
-        currentUser = usersCollection.find_one({"_id":ObjectId(current_user['_id'])})
+                        #  * Retira um seguidor da lista do current user
 
-        if currentUser['following'] == []:
+        if current_user['following'] == []:
             return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum seguidor para ser removido")
         
         #* Pegar os seguidores atuais no banco de dados e remover o que bate com o id atual
         currentUserFollowerList = []
-        for follow in currentUser['following']:
+        for follow in current_user['following']:
             currentUserFollowerList.append(follow)
 
         for follow in currentUserFollowerList:
