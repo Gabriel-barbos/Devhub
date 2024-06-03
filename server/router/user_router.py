@@ -125,12 +125,16 @@ def get_followers(current_user = Depends(UserController.get_current_user)):
 
 
 @user_router.post("/user/add-follow/{idFollow}")
-# * idFollow é o usuário q quero seguir
+# * idFollow é o usuário q o current_user quer seguir
 def follow(idFollow:str, current_user:str = Depends(UserController.get_current_user)):
     try:
-        id = current_user['_id']
+        id = str(current_user['_id'])
+        if idFollow == id:
+            return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Você não pode se seguir")
 
-        user = usersCollection.find_one({"_id":id},{"_id": 0, "following": 1})
+
+        user = usersCollection.find_one({"_id":ObjectId(id)})
 
         #* Pegar os seguidores atuais no banco de dados e inserir o novo
         followingList = []
@@ -141,7 +145,6 @@ def follow(idFollow:str, current_user:str = Depends(UserController.get_current_u
                 followingList.append(follow)
         
         followingList.append(idFollow)
-
 
         updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"following":followingList}})
 
