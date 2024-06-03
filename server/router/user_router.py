@@ -59,7 +59,10 @@ def register_user(user: User):
         
 
         if UserController.email_exists(user.email):
-            return HTTPException(status_code=404, detail="Email Já cadastrado")
+            return HTTPException(status_code=404, detail="Email já cadastrado")
+        
+        if UserController.username_exists(user.username):
+            return HTTPException(status_code=404, detail="Username já cadastrado")
         
         #* hashing password
         user.password = hash(user.password)
