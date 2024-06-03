@@ -158,7 +158,7 @@ def get_all_comments_of_post(actualPostId: str):
      
 
 @post_router.post("/post/like/{id}")
-def like_post(id:str):
+def like_post(id:str,current_user: str = Depends(UserController.get_current_user)):
      try:
           userId = ObjectId(current_user['_id'])
           postId = id
@@ -193,7 +193,7 @@ def like_post(id:str):
      
 
 @post_router.post("/post/dislike/{id}")
-def dislike_post(id:str):
+def dislike_post(id:str, current_user: str = Depends(UserController.get_current_user)):
      try:
           postId = id
           postLikes = postsCollection.find_one({"_id":ObjectId(postId)},{"_id": 0, "likes": 1})
@@ -218,13 +218,28 @@ def dislike_post(id:str):
                                 detail="Ocorreu um erro inesperado ao descurtir")
      
 @post_router.get("/post/like-list/{postId}")
+#* Caso o post não tenha likes, ele retorna um array vazio
 def get_like_list(postId:str):
-     
-     post = postsCollection.find_one({"_id": ObjectId(postId)}, {"likes": 1, "_id": 0})
-     lista = post["likes"]
+     try:
 
-     result = usersCollection.find({"_id": {"$in": lista}}, {"_id": 1, "username": 1, "name": 1})
-     result = convertUsers(result)
-     print("=======================")
-     print(result)
-     return post['likes']
+          #* Pegar a lista de likes do post
+          post = postsCollection.find_one({"_id": ObjectId(postId)}, {"likes": 1, "_id": 0})
+
+          # * Pegar os Ids que deram like no post coletado acima e jogar o object id numa lista
+          lista = []
+          for userId in post["likes"]:
+               objectId = ObjectId(userId)
+               lista.append(objectId)
+
+          # * Consultar os usuários que estão nessa lista de likes
+          result = usersCollection.find({"_id": {"$in": lista}})
+
+          if not result:
+               return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="Ocorreu um erro ao encontrar curtidas")
+          result = convertUsers(result)
+
+          return result
+     except:
+          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Ocorreu um erro inesperado ao consultar lista de curtidas")
