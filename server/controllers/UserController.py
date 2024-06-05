@@ -59,6 +59,12 @@ class UserController:
             return False
          return True
    
+   def username_exists(username:str) -> bool:
+      user = usersCollection.find_one({'username': username})
+      if not user:
+         return False
+      return True
+   
    def create_reset_code(email:str,reset_code:str):
       dict_reset_code = {
          "email": email,

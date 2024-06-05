@@ -59,7 +59,10 @@ def register_user(user: User):
         
 
         if UserController.email_exists(user.email):
-            return HTTPException(status_code=404, detail="Email Já cadastrado")
+            return HTTPException(status_code=404, detail="Email já cadastrado")
+        
+        if UserController.username_exists(user.username):
+            return HTTPException(status_code=404, detail="Username já cadastrado")
         
         #* hashing password
         user.password = hash(user.password)
@@ -106,45 +109,63 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
 def get_followers(current_user = Depends(UserController.get_current_user)):
     try:
         #* Busca o usuário pelo ID
-        user = usersCollection.find_one({"_id": ObjectId(current_user['_id'])})
+        user = current_user
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        followers = usersCollection.find_one({"_id" : ObjectId(current_user['_id'])},{"_id": 0, "followers": 1})
-
-
-        if followers['followers'] == []:
+        if user['followers'] == []:
                 return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Você ainda não segue ninguém!")
         
-        return followers
+        return user['followers']
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
 
 
 @user_router.post("/user/add-follow/{idFollow}")
-def add_follower(idFollow:str, current_user:str = Depends(UserController.get_current_user)):
+# * idFollow é o usuário q o current_user quer seguir
+def follow(idFollow:str, current_user:str = Depends(UserController.get_current_user)):
     try:
-        id = current_user['_id']
+        id = str(current_user['_id'])
+        if idFollow == id:
+            return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Você não pode se seguir")
 
-        followers = usersCollection.find_one({"_id":id},{"_id": 0, "followers": 1})
+
+        user = current_user
 
         #* Pegar os seguidores atuais no banco de dados e inserir o novo
-        FollowerList = []
-        if followers['followers'] != None:
-            for follow in followers['followers']:
+        followingList = []
+        if user['following'] != None:
+            for follow in user['following']:
                 if follow == idFollow:
                     return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Usuário já está adicionado")
-                FollowerList.append(follow)
+                followingList.append(follow)
         
-        FollowerList.append(idFollow)
+        followingList.append(idFollow)
 
-
-        updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"followers":FollowerList}})
+        updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"following":followingList}})
 
         if not updatedUser:
             return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Erro ao adicionar seguidor")
         
+
+        # * Atualizar lista de seguidores do USUÁRIO QUE FOI SEGUIDO (idFollow)
+        userFollowed = usersCollection.find_one({"_id":ObjectId(idFollow)})
+        userFollowedFollowersList = []
+
+        if userFollowed['followers'] != [] and userFollowed['followers'] != None:
+            for followerId in userFollowed['followers']:
+                userFollowedFollowersList.append(followerId)
+
+        userFollowedFollowersList.append(str(current_user['_id']))
+
+        userFollowedUpdate = usersCollection.find_one_and_update({"_id": ObjectId(idFollow)}, {"$set":{"followers":userFollowedFollowersList}})
+        if not userFollowedUpdate:
+            return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Erro inesperado")
+        
+
         return HTTPException(status_code=status.HTTP_200_OK,
                                 detail="Seguidor adicionado!")
     except:
@@ -153,32 +174,54 @@ def add_follower(idFollow:str, current_user:str = Depends(UserController.get_cur
     
 
 @user_router.post("/user/remove-follower/{idFollower}")
-def remove_follower(idFollower:str, current_user:str = Depends(UserController.get_current_user)):
+# * idFollower é a pessoa que o current user vai deixar de seguir
+def unfollow(idFollower:str, current_user:str = Depends(UserController.get_current_user)):
     try:
-        followers = usersCollection.find_one({"_id":ObjectId(current_user['_id'])},{"_id": 0, "followers": 1})
+                        #  * Retira um seguidor da lista do current user
 
-
-        if followers['followers'] == []:
+        if current_user['following'] == []:
             return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum seguidor para ser removido")
         
         #* Pegar os seguidores atuais no banco de dados e remover o que bate com o id atual
-        FollowerList = []
-        for follow in followers['followers']:
-            FollowerList.append(follow)
+        currentUserFollowerList = []
+        for follow in current_user['following']:
+            currentUserFollowerList.append(follow)
 
-        for follow in FollowerList:
+        for follow in currentUserFollowerList:
             if follow == idFollower:
-                FollowerList.remove(follow)
+                currentUserFollowerList.remove(follow)
 
-        updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"followers":FollowerList}})
+
+        updatedUser =  usersCollection.find_one_and_update({"_id": ObjectId(current_user['_id'])}, {"$set":{"following":currentUserFollowerList}})
         if not updatedUser:
             return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao remover seguidor!")
+        
+        # * Atualizar lista de seguidores do USUÁRIO QUE NÃO É MAIS SEGUIDO (idFollower)
+        userFollowed = usersCollection.find_one({"_id":ObjectId(idFollower)})
+
+        followedUserList = []
+        for followId in userFollowed['followers']:
+            followedUserList.append(followId)
+
+        for followId in followedUserList:
+            if followId == str(current_user["_id"]):
+                followedUserList.remove(followId)
+        
+
+        userFollowedUpdate = usersCollection.find_one_and_update({"_id": ObjectId(idFollower)}, {"$set":{"followers":followedUserList}})
+        if not userFollowedUpdate:
+            return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Erro inesperado")
         return HTTPException(status_code=status.HTTP_202_ACCEPTED, detail="Seguidor removido com sucesso!")
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")
 
-@user_router.post("/feed")
+@user_router.get("/feed")
+# * O feed retorna todos os posts dos usuários q ele segue
 def feed(current_user: str = Depends(UserController.get_current_user)):
-    
+    print(current_user)
+    print("=================================")
+    if current_user["following"] == None or current_user["following"] == []:
+        return "sem seguidores"
     
     return "oi"
