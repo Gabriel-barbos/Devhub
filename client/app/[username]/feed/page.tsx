@@ -25,77 +25,28 @@ export default function Page({params} : {params: {username: string}}) {
     })
 
     const fetchPosts = async () => {
-      const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
+      const res = await fetch(`http://127.0.0.1:8000/following-feed`, {
           method: "GET",
-        })
-        if(res.ok) {
-          const {name, posts} = await res.json()
-          setPostsGroup({posts: posts, name: name});
-        }
-    }
-
-    const fetchDefaultBadges = async() => {
-      const res = await fetch("http://127.0.0.1:8000/badges", {
-              method: "GET",
-            })
-            if(res.ok) {
-              const badges = await res.json()
-              setDefaultBadges(badges);
-            }
-    }
-
-    const fetchImage = async (imagePath) => {
-      try {
-        // Make the GET request with authorization headers
-        const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
-          method: 'GET',
           headers: {
             // Replace 'your_access_token' with your actual access token
             "Access-Control-Allow-Headers" : "Content-Type",
             "Access-Control-Allow-Origin": "*",
             'Authorization': "Bearer " + token,
           }
-        });
-
-        // Check if the request was successful
-        if (res.ok) {
-          // Get the image URL from the response
-          const imageUrl = await res.blob();
-          // Convert blob to URL
-          setImageUrl(URL.createObjectURL(imageUrl));
-        } else {
-          console.error('Failed to fetch image:', res.statusText);
+        })
+        if(res.ok) {
+          const posts = await res.json()
+          setPostsGroup(posts)
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA / " + posts)
         }
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
+    }
 
     const fetchData = async() => {
         if(hasUser) return;
-        const res = await fetch(`http://127.0.0.1:8000/user/${params.username}`, {
-          method: "GET",
-        })
-        if(res.ok) {
-          const info = await res.json()
-          setName(info.data.name)
-          setBio(info.data.bio)
-          setId(info.data.id)
-          setImagePath(info.data.imagePath)
-          setBadges(info.data.badges)
-          setHasUser(true)
-          fetchPosts()
-          fetchDefaultBadges()
-          fetchImage(info.data.imagePath)
-          
-          const decodedToken = jwtDecode(String(token))
-          const authUsername = decodedToken.username
-          setAuth(authUsername == params.username)
-        }
+        fetchPosts()
       }
 
     fetchData()
-
 
     return (
         <div>

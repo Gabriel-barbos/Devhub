@@ -5,8 +5,10 @@ import { ThemeToggle } from "../theme-toggle";
 import EditButton from "./editbtn";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import StatsButton from "./stats-btn";
 import { useState } from "react";
 import { jwtDecode } from "jwt-decode";
+
 const Sidebar = () => {
   const [token, setToken] = useState(() => {
     if(typeof window !== "undefined"){
@@ -34,8 +36,8 @@ const Sidebar = () => {
           <div className="sm:mt-auto sm:block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
-              <EditButton />
-         
+              <EditButton email={undefined} id={undefined} password={undefined} />
+                <StatsButton></StatsButton>
             </div>
           </div>
         </div>

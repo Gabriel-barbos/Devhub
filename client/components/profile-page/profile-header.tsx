@@ -33,21 +33,26 @@ type Badge = {
     defaultBadges: (string | number)[],
     auth: boolean
     imageUrl: string
+    token: string
+    followers: (string)[]
+    following: (string)[]
   }
 
 
   
-  const token = localStorage.getItem("accessToken")
 
-  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl}: IProfileHeaderParams) => {
+
+  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl, token, following, followers}: IProfileHeaderParams) => {
+      const [isFollowing, setIsFollowing] = useState(false);
+
       useEffect(() => {
         return () => URL.revokeObjectURL(imageUrl)
       }, [])
 
-      const [isFollowing, setIsFollowing] = useState(false);
+      
 
       const handleFollowClick = () => {
-          const followUrl = !isFollowing ? "http://localhost:8000/user/add-follow/6645b430c0216bd7132ea07b" : "http://localhost:8000/user/remove-follower/6645b430c0216bd7132ea07b"
+          const followUrl = !isFollowing ? `http://localhost:8000/user/add-follow/${id}` : `http://localhost:8000/user/remove-follower/${id}`
           fetch(followUrl, 
             {
               method: "POST",
