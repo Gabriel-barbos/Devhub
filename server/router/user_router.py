@@ -287,6 +287,6 @@ def following_feed(current_user: str = Depends(UserController.get_current_user))
         if current_user["following"] == None or current_user["following"] == []:
             return {"message": "Você não segue ninguém"}
         
-        return posts
+        return {"posts": posts}
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")
