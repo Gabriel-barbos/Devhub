@@ -3,10 +3,12 @@ from fastapi import APIRouter, HTTPException,FastAPI, Depends, status,File, Uplo
 from models.User import User, UpdateUserInfo, UpdateUserCredentials
 from utils.util import hash
 
-from db_config import usersCollection
+from db_config import usersCollection, postsCollection
 from serializer.user_serializer import convertUser, convertUsers
+from serializer.post_serializer import convertPost, convertPosts
 from bson import ObjectId
 from controllers.UserController import UserController
+from datetime import datetime
 app = FastAPI()
 
 user_router = APIRouter(tags=['User'])
@@ -56,8 +58,7 @@ def register_user(user: User):
              for badge in user.badges:
                 convertedBadgeList.append(dict(badge))
              user.badges = convertedBadgeList
-        
-
+        user.created_at = datetime.now()
         if UserController.email_exists(user.email):
             return HTTPException(status_code=404, detail="Email já cadastrado")
         
@@ -66,7 +67,7 @@ def register_user(user: User):
         
         #* hashing password
         user.password = hash(user.password)
-
+        
         insert = usersCollection.insert_one(dict(user))
         if not insert:
             raise HTTPException(status_code=500, detail="Erro ao inserir")
@@ -138,7 +139,7 @@ def follow(idFollow:str, current_user:str = Depends(UserController.get_current_u
         if user['following'] != None:
             for follow in user['following']:
                 if follow == idFollow:
-                    return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Usuário já está adicionado")
+                    return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Voce já segue este usuário")
                 followingList.append(follow)
         
         followingList.append(idFollow)
@@ -167,7 +168,7 @@ def follow(idFollow:str, current_user:str = Depends(UserController.get_current_u
         
 
         return HTTPException(status_code=status.HTTP_200_OK,
-                                detail="Seguidor adicionado!")
+                                detail="Seguindo!")
     except:
          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Ocorreu um erro inesperado ao adicionar seguidor")
@@ -216,12 +217,48 @@ def unfollow(idFollower:str, current_user:str = Depends(UserController.get_curre
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")
 
-@user_router.get("/feed")
+
+@user_router.get("/analytics")
+def get_analytics(current_user: str = Depends(UserController.get_current_user)):
+    liked_posts_count = UserController.get_liked_posts_count(ObjectId(current_user['_id']))
+    followers_count = UserController.followers_count(ObjectId(current_user['_id']))
+    following_count = UserController.following_count(ObjectId(current_user['_id']))
+    comments_made_count = UserController.comments_made_count(current_user['username'])
+    replys_recieved_count =  UserController.replys_recieved_count(current_user['username'])
+    print("================================ analytc ===================")
+    print(followers_count)
+    return {"liked_posts_count": liked_posts_count,
+            "comments_made": comments_made_count,
+            "replys_recieved": replys_recieved_count,
+            "badges": current_user["badges"],
+            "articles_count": 0,
+            "projects_count": 0,
+            "followers_count": followers_count,
+            "following_count": following_count,
+            "created_at": current_user["created_at"]}
+
+
+@user_router.get("/following-feed")
 # * O feed retorna todos os posts dos usuários q ele segue
-def feed(current_user: str = Depends(UserController.get_current_user)):
-    print(current_user)
-    print("=================================")
-    if current_user["following"] == None or current_user["following"] == []:
-        return "sem seguidores"
-    
-    return "oi"
+def following_feed(current_user: str = Depends(UserController.get_current_user)):
+    try:
+        following_list = current_user["following"]
+
+        lista=[]
+        for item in following_list:
+                lista.append(ObjectId(item))
+
+        print(lista)
+        following_users = list(usersCollection.find({"_id":{"$in": lista}},{"_id":0,"username":1}))
+
+    # Transformar array de objetos em array de string
+        usernames = [obj['username'] for obj in following_users]
+        posts = postsCollection.find({"author_username": {"$in": usernames}})
+        posts = convertPosts(posts)
+
+        if current_user["following"] == None or current_user["following"] == []:
+            return {"message": "Você não segue ninguém"}
+        
+        return posts
+    except:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")

@@ -31,7 +31,8 @@ def convertUser(user) -> dict:
         "bio": user["bio"],
         "badges": user["badges"],
         "following": user["following"],
-        "followers": user["followers"]
+        "followers": user["followers"],
+        "created_at": user["created_at"]
     }
 
 

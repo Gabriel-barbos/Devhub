@@ -2,15 +2,16 @@ from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from env_variables import ACESS_TOKEN_EXPIRE_MINUTES,ALGORITHM,SECRET_KEY
 from serializer.user_serializer import convertUser, convertUsers
-from db_config import usersCollection,codesCollection
+from serializer.post_serializer import convertPost, convertPosts
+from db_config import usersCollection,codesCollection, postsCollection
 from models.Token import TokenData
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
-ACESS_TOKEN_EXPIRE_MINUTES = 50
+ACESS_TOKEN_EXPIRE_MINUTES = 140
 from jose import JWTError, jwt
 from datetime import datetime,timedelta
 
+from bson import ObjectId
 class UserController:
    
    def create_acess_token(data:dict):
@@ -76,7 +77,75 @@ class UserController:
       if not insert:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Ocorreu um erro ao inserir")
       return True
+   
 
+   # Posts que já curti
+   def get_liked_posts_count(id:str) -> int:
+      posts_likes = list(postsCollection.find({},{"likes":1, "_id":0}))
+      # convertPosts(posts)
+      all_likes = []
+
+      # Iterando sobre a lista de dicionários
+      for post in posts_likes:
+         if post['likes'] != None:
+            all_likes.extend(post['likes'])
+         # Adicionando os likes de cada post à lista all_likes_object_ids
+         
+   # verificar se o id está na lista de likes, se estiver, adiciona numa lista e faz a contagem
+      count_list = []
+      
+      for item in all_likes:
+         if item == str(ObjectId(id)):
+            count_list.append(item)
+      count = len(count_list)
+      return count
+   
+#   TOTAL DE COMENTARIOS QUE MEUS POSTS RECEBERAM
+   def replys_recieved_count(username:str) -> int:
+      my_posts = list(postsCollection.find({"author_username": username},{"_id":1}))
+      posts_ids =[]
+      # converter object ids pra string
+      for post_id in my_posts:
+         posts_ids.append(str(post_id["_id"]))
+
+      # Pegar todos os posts que respondem algum post da lista my_posts
+      replys = list(postsCollection.find({"reply_to":{"$in":posts_ids}}))
+      count = len(replys)
+      return count
+       
   
+#   COMENTARIOS QUE FIZ
+   def comments_made_count(username:str) ->int:
+      query = {"reply_to": {"$ne": None}, "author_username": username}
+    
+    # Executar a query
+      my_posts = list(postsCollection.find(query))
+      
+      # Contar a quantidade de posts que retornaram
+      count = len(my_posts)
+      return count
+   
+   # Quantidade de seguidores
+   def followers_count(id:str) ->int:
+      query = {"_id":id}
+      projection = {"_id":0,"followers":1}
+      result = list(usersCollection.find(query,projection))
+      print(result[0]['followers'])
+      if(result[0]['followers'] == None):
+         return 0
+      my_followers = result[0]['followers']
+      return len(my_followers)
+   
 
+   def following_count(id:str) ->int:
+      query = {"_id":id}
+      projection = {"_id":0,"following":1}
+      result = list(usersCollection.find(query,projection))
+
+      if(result[0]['following'] == None):
+         return 0
+      
+      my_following_list = result[0]['following']
+      return len(my_following_list)
+   
    
