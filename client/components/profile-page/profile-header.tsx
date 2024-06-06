@@ -36,6 +36,9 @@ type Badge = {
   }
 
 
+  
+  const token = sessionStorage.getItem("accessToken")
+
   const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl}: IProfileHeaderParams) => {
       useEffect(() => {
         return () => URL.revokeObjectURL(imageUrl)
@@ -44,6 +47,21 @@ type Badge = {
       const [isFollowing, setIsFollowing] = useState(false);
 
       const handleFollowClick = () => {
+          const followUrl = !isFollowing ? "http://localhost:8000/user/add-follow/6645b430c0216bd7132ea07b" : "http://localhost:8000/user/remove-follower/6645b430c0216bd7132ea07b"
+          fetch(followUrl, 
+            {
+              method: "POST",
+              headers:{
+                "Access-Control-Allow-Headers" : "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+                "Authorization":` Bearer ${token}`
+                },
+            }
+          )
+          .then(res => res.json())
+          .then(data => {
+            console.log(data)
+          })
           setIsFollowing(!isFollowing);
         };
       

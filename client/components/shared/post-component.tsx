@@ -25,7 +25,7 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
     const [likes, setLikes] = useState(likes_count)
     const [liked, setLiked] = useState(false)
     const [postReplied, setPostReplied] = useState<IPostReplied>({})
-   
+
     const [isFollowing, setIsFollowing] = useState(false);
 
     const handleFollowClick = () => {
@@ -80,7 +80,6 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
                         Ver comentários
                     </Link>
                 </div>
-                
             </CardFooter>
         </Card>
     )
