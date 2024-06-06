@@ -18,9 +18,9 @@ export default function Home() {
 
         <div className="flex flex-col items-center w-full gap-2">
 
-          <div className="flex flex-col gap-2 justify-start w-full bg-zinc-900 rounded-lg p-4 h-[450px] transition ease-in-out duration-700 hover:-translate-y-1 hover:scale-105">
-            <h2 className="font-semibold text-4xl text-start dark:text-slate-50">Conecte com desenvolvedores.<br></br>Explore novos horizontes.</h2 >
-            <p className="text-slate-200 italic">Outra frase de efeito aqui, estou sem criatividade.</p>
+          <div className="flex flex-col gap-2 justify-start w-full bg-zinc-900 rounded-lg p-4 h-[350px] transition ease-in-out duration-700 hover:-translate-y-1 hover:scale-105">
+            <h2 className="font-semibold text-4xl text-start md:text-5xl dark:text-slate-50">Conecte-se com outros desenvolvedores.</h2 >
+            <p className="text-slate-200 italic md:text-2xl">Explore novos horizontes.</p>
             <Button asChild className="w-[250px]"><Link href="/register">Crie sua conta</Link></Button>
 
 
@@ -28,16 +28,16 @@ export default function Home() {
             <Button asChild className="w-[250px]"><Link href="/login">Entrar</Link></Button>
           </div>
         </div>
-
+        {/*
         <div className="flex flex-col w-full bg-zinc-900 rounded-lg p-4 transition ease-in-out duration-700 hover:-translate-y-1 hover:scale-105">
         <h2 className="font-semibold text-3xl text-start dark:text-slate-50">Exiba seus principais feitos.</h2>
         <p className="text-slate-200 italic">Seja com projetos ou artigos. </p>
         </div>
-
+        */} 
 
         <div className="flex flex-col w-full bg-zinc-900 rounded-lg p-4 transition ease-in-out duration-700 hover:-translate-y-1 hover:scale-105">
-        <h2 className="font-semibold text-3xl text-start dark:text-slate-50">Mostre no que você é especial.</h2>
-        <p className="text-slate-200 italic">Decore seu perfil com badges que mostram suas especialidades.</p>
+        <h2 className="font-semibold text-3xl text-start dark:text-slate-50 md:text-5xl pb-2">Mostre no que você é especial.</h2>
+        <p className="text-slate-200 italic md:text-2xl">Decore seu perfil com badges que mostram suas especialidades.</p>
           <div className="flex flex-wrap gap-2 w-full justify-center py-2">
           <Badge className="animate-pulse text-center">HTML</Badge>
           <Badge className="animate-pulse text-center">JavaScript</Badge>
@@ -57,21 +57,19 @@ export default function Home() {
             <AccordionItem value="item-1">
               <AccordionTrigger>No que o Devhub me agrega?</AccordionTrigger>
               <AccordionContent>
-                Yes. It adheres to the WAI-ARIA design pattern.
+                Nosso objetivo é suprir a necessidade de um ecossistema em formato de rede social para profissionais da área da tecnologia. Visando dar suporte tanto para áreas baseadas em projetos quanto para áreas baseadas em pesquisas.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger className="text-start">Posso criar uma conta sem ser desenvolvedor?</AccordionTrigger>
+              <AccordionTrigger className="text-start">O que são badges?</AccordionTrigger>
               <AccordionContent>
-                Yes. It comes with default styles that matches the other
-                components&apos; aesthetic.
+                As badges servem de uma forma visual para demonstrar para outras pessoas seus interesses e/ou especialidades
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
               <AccordionTrigger>É de graça?</AccordionTrigger>
               <AccordionContent>
-                Yes. It&apos;s animated by default, but you can disable it if you
-                prefer.
+                Sim.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

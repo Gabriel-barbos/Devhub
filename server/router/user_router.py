@@ -106,7 +106,7 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
      return {"message": "Usuário deletado com sucesso!"}
 
 
-@user_router.get("/user/followers/")
+@user_router.get("/u/followers/")
 def get_followers(current_user = Depends(UserController.get_current_user)):
     try:
         #* Busca o usuário pelo ID
@@ -127,7 +127,7 @@ def get_followers(current_user = Depends(UserController.get_current_user)):
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
 
-@user_router.get("/user/following/")
+@user_router.get("/u/following/")
 def get_followers(current_user = Depends(UserController.get_current_user)):
     try:
         #* Busca o usuário pelo ID
@@ -287,6 +287,6 @@ def following_feed(current_user: str = Depends(UserController.get_current_user))
         if current_user["following"] == None or current_user["following"] == []:
             return {"message": "Você não segue ninguém"}
         
-        return {"posts": posts}
+        return {"feed": posts}
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")

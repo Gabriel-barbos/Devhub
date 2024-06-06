@@ -24,7 +24,7 @@ async def get_all_posts():
         if posts == []:
              raise HTTPException(status_code=500, detail="Nenhum post adicionado")
              
-        return posts
+        return {"posts": posts}
     except HTTPException as error:
          return error
     
@@ -39,6 +39,7 @@ async def get_all_posts_of_user(username:str):
           user = usersCollection.find({"username": username})
           convertedUsers = convertUsers(user)
           author_name = convertedUsers[0]['name']
+          
 
           return {"posts": convertedPosts,
                   "name": author_name}

@@ -23,7 +23,7 @@ const Sidebar = () => {
           <div className="flex flex-col sm:mt-10 sm:gap-4 justify-between">
             <a href={`/${decodedToken.username}/feed`} className="flex items-center gap-2">
                 <Home />
-                Feed
+                Página Inicial
             </a>
             <a href={`/${decodedToken.username}`} className="flex items-center gap-2">
                 <User />
@@ -37,7 +37,7 @@ const Sidebar = () => {
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
               <EditButton email={undefined} id={undefined} password={undefined} />
-                <StatsButton></StatsButton>
+               <StatsButton></StatsButton>
             </div>
           </div>
         </div>

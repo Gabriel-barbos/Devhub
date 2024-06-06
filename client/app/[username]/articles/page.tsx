@@ -115,16 +115,11 @@ export default function Page({params} : {params: {username: string}}) {
     return (
         <div>
         <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
-        <ProfileTabs username ={params.username}/>
+        <ProfileTabs username={params.username} active={"articles"}/>
         {auth && <ArticleMaker name={name} username={params.username} imageUrl={imageUrl}/>}
         {articlesGroup.articles.length > 0 &&
         <ArticleList name={name} articles={articlesGroup.articles} auth={auth} imageUrl={imageUrl}/>
         }
-
-
-
-        
-        
         </div>
        );
   }

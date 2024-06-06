@@ -55,11 +55,8 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
                         <AvatarImage src={imageUrl} /> 
                         <AvatarFallback>{avatarFallbacker(user.name)}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight">@{user.username}
-                    
-                    <Button variant={isFollowing ? "secondary": "outline"} onClick={handleFollowClick} className="px-3 ml-2 py-1">
-                    {isFollowing ? 'Seguindo' : 'Seguir'}
-                    </Button>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight" asChild> <Link href={`/${user.username}`}>@{user.username}</Link>
+
                     </CardTitle>
                 </div>
                 <CardDescription>{relativeTime(created_at)}</CardDescription>

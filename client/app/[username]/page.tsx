@@ -25,7 +25,7 @@ export default function Page({params} : {params: {username: string}}) {
         return localStorage.getItem("accessToken") 
       } return ""
     })
-
+    
     const fetchPosts = async () => {
       const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
           method: "GET",
@@ -35,7 +35,7 @@ export default function Page({params} : {params: {username: string}}) {
           setPostsGroup({posts: posts, name: posts});
         }
     }
-
+    
     const fetchDefaultBadges = async() => {
       const res = await fetch("http://127.0.0.1:8000/badges", {
               method: "GET",

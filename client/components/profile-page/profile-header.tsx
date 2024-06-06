@@ -96,8 +96,8 @@ type Badge = {
                 <ProfileBadges badges={badges} />
                 
                 <div className="top-16 flex gap-2">
-                <p><span className={"text-muted-foreground"}>seguidores:</span> 0</p>
-                <p><span className={"text-muted-foreground"}>seguindo:</span> 0</p>
+                <a href={`/${username}/followers`}>{followers ? followers.length : 0}<span className={"text-muted-foreground"}> seguidores</span></a>
+                <a href={`/${username}/following`}>{following ? following.length : 0}<span className={"text-muted-foreground"}> seguindo</span> </a>
                 </div>
               </div>
             </div>
