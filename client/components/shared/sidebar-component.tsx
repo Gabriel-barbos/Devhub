@@ -3,6 +3,8 @@ import { ThemeToggle } from "../theme-toggle";
 import EditButton from "./editbtn";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import StatsButton from "./stats-btn";
+
 const Sidebar = () => {
 
 
@@ -21,8 +23,8 @@ const Sidebar = () => {
           <div className="sm:mt-auto sm:block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
-              <EditButton />
-         
+              <EditButton email={undefined} id={undefined} password={undefined} />
+                <StatsButton></StatsButton>
             </div>
           </div>
         </div>
