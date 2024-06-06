@@ -13,6 +13,7 @@ class User (BaseModel):
     badges: Optional[List[Badge]] = None
     followers: Optional[List[str]] = None
     following: Optional[List[str]] = None
+    created_at: Optional[datetime] = None
 
 class UserLogin(BaseModel):
     username: EmailStr
