@@ -115,11 +115,39 @@ def get_followers(current_user = Depends(UserController.get_current_user)):
             raise HTTPException(status_code=404, detail="User not found")
 
         if user['followers'] == []:
-                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Você ainda não segue ninguém!")
+                return {"message": "Você ainda não segue ninguém"}
         
-        return user['followers']
+        lista=[]
+        for item in user['followers']:
+                lista.append(ObjectId(item))
+        followers_users = usersCollection.find({"_id":{"$in": lista}})
+        followers_users = convertUsers(followers_users)
+
+        return {"followers": followers_users }
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
+
+@user_router.get("/user/following/")
+def get_followers(current_user = Depends(UserController.get_current_user)):
+    try:
+        #* Busca o usuário pelo ID
+        user = current_user
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if user['following'] == []:
+                return {"message": "Você ainda não segue ninguém"}
+        
+        lista=[]
+        for item in user['following']:
+                lista.append(ObjectId(item))
+        following_users = usersCollection.find({"_id":{"$in": lista}})
+        following_users = convertUsers(following_users)
+
+        return {"following": following_users }
+    except:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
+
 
 
 @user_router.post("/user/add-follow/{idFollow}")
