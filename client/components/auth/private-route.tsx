@@ -11,7 +11,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const router = useRouter()
   const [hasToken, setHasToken] = useState(false)
   useEffect(() => {
-    const token = sessionStorage.getItem("accessToken")
+    const token = localStorage.getItem("accessToken")
     if(token){
         setHasToken(true)
     }

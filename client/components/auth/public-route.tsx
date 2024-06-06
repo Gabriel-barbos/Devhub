@@ -12,7 +12,7 @@ interface PrivateRouteProps {
 const PublicRoute = ({ children }: PrivateRouteProps) => {
   const router = useRouter()
   const [isAuth, setIsAuth] = useState(false)
-  const token = sessionStorage.getItem("accessToken")
+  const token = localStorage.getItem("accessToken")
     useEffect(() => {
       
       if(token){

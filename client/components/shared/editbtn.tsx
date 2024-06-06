@@ -30,7 +30,7 @@ const EditButton = ({id,email,password}: ConfigProfileParams ) => {
 
   const {toast} = useToast()
   const router = useRouter()
-  const token = sessionStorage.getItem("accessToken")
+  const token = localStorage.getItem("accessToken")
   const [formSubmitted, setFormSubmitted] = useState(false)
   const Userid = id
   const form = useForm<z.infer<typeof UserConfigForm>>({

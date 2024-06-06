@@ -12,7 +12,7 @@ export default function DeletePostBtn({postId}: IDeletePostBtnParams) {
     const {toast} = useToast();
 
     useEffect(() => {
-        const accessToken = sessionStorage.getItem("accessToken");
+        const accessToken = localStorage.getItem("accessToken");
         if (accessToken) {
             setToken(accessToken);
         }

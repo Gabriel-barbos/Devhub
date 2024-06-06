@@ -23,7 +23,7 @@ const PostMaker = ({name, username, imageUrl}) => {
     const {toast} = useToast();
 
     useEffect(() => {
-        setToken(sessionStorage.getItem("accessToken") || "");
+        setToken(localStorage.getItem("accessToken") || "");
     }, [token])
 
     const handlePublish = async () => {

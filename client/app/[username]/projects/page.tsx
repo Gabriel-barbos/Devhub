@@ -20,7 +20,7 @@ export default function Page({params} : {params: {username: string}}) {
     const [auth, setAuth] = useState(false);
     const [token, setToken] = useState(() => {
       if(typeof window !== "undefined"){
-        return sessionStorage.getItem("accessToken") 
+        return localStorage.getItem("accessToken") 
       } return ""
     })
 

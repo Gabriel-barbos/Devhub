@@ -93,7 +93,7 @@ export function LoginForm() {
 
       if(response.ok) {
         const data = await response.json();
-        sessionStorage.setItem("accessToken", data.token);
+        localStorage.setItem("accessToken", data.token);
         saveTokenToDB(data.token); // Save token to IndexedDB
         const decodedToken = jwtDecode(data.token);
         router.push(`${decodedToken.username}`);

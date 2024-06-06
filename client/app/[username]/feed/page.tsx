@@ -1,14 +1,14 @@
 "use client"
 
-import ProfileTabs from "@/components/profile-page/profile-tabs";
 import ProfileHeader from "@/components/profile-page/profile-header"
-import ArticleList from "@/components/shared/article-list";
-import ArticleMaker from "@/components/shared/article-maker";
+import PostsList from "@/components/shared/posts-list"
+import ProfileTabs from "@/components/profile-page/profile-tabs"
+import PostMaker from "@/components/shared/post-maker";
 import { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 export default function Page({params} : {params: {username: string}}) {
   
-    const [articlesGroup, setArticlesGroup] = useState({articles: [], name: ""});
+    const [postsGroup, setPostsGroup] = useState({posts: [], name: ""});
     const [imageUrl, setImageUrl] = useState('')
     const [id, setId] = useState("")
     const [name, setName] = useState("")
@@ -24,15 +24,15 @@ export default function Page({params} : {params: {username: string}}) {
       } return ""
     })
 
-    // const fetchPosts = async () => {
-    //   const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
-    //       method: "GET",
-    //     })
-    //     if(res.ok) {
-    //       const {name, posts} = await res.json()
-    //       setPostsGroup({posts: posts, name: name});
-    //     }
-    // }
+    const fetchPosts = async () => {
+      const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
+          method: "GET",
+        })
+        if(res.ok) {
+          const {name, posts} = await res.json()
+          setPostsGroup({posts: posts, name: name});
+        }
+    }
 
     const fetchDefaultBadges = async() => {
       const res = await fetch("http://127.0.0.1:8000/badges", {
@@ -84,7 +84,7 @@ export default function Page({params} : {params: {username: string}}) {
           setImagePath(info.data.imagePath)
           setBadges(info.data.badges)
           setHasUser(true)
-        //   fetchPosts()
+          fetchPosts()
           fetchDefaultBadges()
           fetchImage(info.data.imagePath)
           
@@ -97,34 +97,11 @@ export default function Page({params} : {params: {username: string}}) {
     fetchData()
 
 
-
-    if(!hasUser){
-        return (
-            <div>
-                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
-                <div className="flex flex-col justify-center items-start gap-2">
-                    <h1 className="text-5xl font-bold">Essa conta não existe</h1>
-                    <span className="font-light text-slate-400">Tente procurar outra conta</span>
-                </div>
-            </div>
-        )
-    }  
-
-
-
     return (
         <div>
-        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
-        <ProfileTabs username ={params.username}/>
-        {auth && <ArticleMaker name={name} username={params.username} imageUrl={imageUrl}/>}
-        {articlesGroup.articles.length > 0 &&
-        <ArticleList name={name} articles={articlesGroup.articles} auth={auth} imageUrl={imageUrl}/>
-        }
-
-
-
-        
-        
+        {postsGroup.posts.length > 0 && 
+          <PostsList name={name} posts={postsGroup.posts} auth={auth} imageUrl={imageUrl} />
+        } 
         </div>
        );
   }

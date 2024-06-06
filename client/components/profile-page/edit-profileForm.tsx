@@ -33,7 +33,7 @@ const ProfileForm = ({name, bio, imagePath, id}: IProfileForm) => {
   const router = useRouter()
   const Userid = id
 
-  const token = sessionStorage.getItem("accessToken")
+  const token = localStorage.getItem("accessToken")
 
   const form = useForm<z.infer<typeof EditForm>>({
     resolver: zodResolver(EditForm),

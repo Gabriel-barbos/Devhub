@@ -28,7 +28,7 @@ export function BadgesCheckbox({defaultBadges}) {
   const [token, setToken] = useState("")
 
     useEffect(() => {
-        setToken(sessionStorage.getItem("accessToken") || "");
+        setToken(localStorage.getItem("accessToken") || "");
     }, [token])
 
 

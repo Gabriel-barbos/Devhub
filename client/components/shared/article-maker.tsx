@@ -25,7 +25,7 @@ const ArticleMaker = ({name, username, imageUrl}) => {
 
     
     useEffect(() => {
-        setToken(sessionStorage.getItem("accessToken") || "");
+        setToken(localStorage.getItem("accessToken") || "");
     }, [token])
 
     // const handlePublish = async () => {

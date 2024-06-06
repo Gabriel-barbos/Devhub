@@ -37,7 +37,7 @@ type Badge = {
 
 
   
-  const token = sessionStorage.getItem("accessToken")
+  const token = localStorage.getItem("accessToken")
 
   const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl}: IProfileHeaderParams) => {
       useEffect(() => {

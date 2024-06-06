@@ -34,7 +34,7 @@ export default function Page({params} : {params: {id: string}}) {
 
     const [token, setToken] = useState(() => {
         if(typeof window !== "undefined"){
-          return sessionStorage.getItem("accessToken") 
+          return localStorage.getItem("accessToken") 
         } return ""
     })
 
