@@ -1,7 +1,7 @@
 "use client"
 
 import ProfileHeader from "@/components/profile-page/profile-header"
-import PostsList from "@/components/shared/posts-list"
+import FollowList from "@/components/follow/follow-list";
 import FollowTabs from "@/components/follow/follow-tabs";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -12,7 +12,7 @@ export default function Page({ params }: { params: { username: string } }) {
     const [id, setId] = useState("")
     const [name, setName] = useState("")
     const [bio, setBio] = useState("")
-    const [followers, setFollowers] = useState([])
+    const [following, setFollowing] = useState([])
     const [imagePath, setImagePath] = useState("")
     const [hasUser, setHasUser] = useState(false)
     const [auth, setAuth] = useState(false);
@@ -51,19 +51,19 @@ export default function Page({ params }: { params: { username: string } }) {
 
     const fetchData = async() => {
         if(hasUser) return;
-        const res = await fetch(`http://127.0.0.1:8000/u/followers}`, {
+        const res = await fetch(`http://127.0.0.1:8000/u/following`, {
           method: "GET",
+          headers: {
+            // Replace 'your_access_token' with your actual access token
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+            'Authorization': "Bearer " + token,
+          }
         })
         if(res.ok) {
           const info = await res.json()
-          setName(info.data.name)
-          setBio(info.data.bio)
-          setId(info.data.id)
-          setImagePath(info.data.imagePath)
-          setFollowers(info.data.followers)
+          setFollowing(info.following)
           setHasUser(true)
-          fetchImage(info.data.imagePath)
-          
           const decodedToken = jwtDecode(String(token))
           const authUsername = decodedToken.username
           setAuth(authUsername == params.username)
@@ -75,18 +75,15 @@ export default function Page({ params }: { params: { username: string } }) {
 
   return (
     <div>
-      <FollowTabs username={params.username} active="followers" />
-      {followers ?
+      <FollowTabs username={params.username} active="following" />
+      {following ?
         <div className="py-4 flex flex-col gap-4">
-            {followers.map((follower, i) => {
-                return <p>
-                nome: {name}, bio: {bio}, username: @{params.username}
-              </p>
-            })}
-        </div> : 
+            <FollowList following={following}/>
+        </div>
+         : 
         <div className="flex items-center gap-2 p-4">
-          <h1 className="text-4xl font-bold">Você não possui seguidores :(</h1>
-          <span className="font-light text-4xl text-slate-400">Todos que seguirem sua conta aparecerão aqui </span>
+          <h1 className="text-4xl font-bold">Você não possui seguidores</h1>
+          <span className="font-light text-4xl text-slate-400">:Todos que seguirem sua conta aparecerão aqui </span>
         </div>
       }
     </div>

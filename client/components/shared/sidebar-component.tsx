@@ -1,6 +1,6 @@
 "use client"
 
-import { User, Home } from "lucide-react";
+import { User, Home, Bell } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
 import EditButton from "./editbtn";
 import { Button } from "../ui/button";
@@ -28,14 +28,18 @@ const Sidebar = ({email,password,id}: IEditAccountParams) => {
         <div className={"p-8 sm:h-screen relative flex sm:flex-col items-center sm:items-start justify-between"}>
           <h1 className="font-black sm:text-6xl md:text-2xl dark:text-slate-50">devhub</h1>
           <div className="flex flex-col sm:mt-10 sm:gap-4 justify-between">
-            <a href={`/${decodedToken.username}/feed`} className="flex items-center gap-2">
-                <Home />
+            <Link href={`/${decodedToken.username}/feed`}  className="flex items-center gap-2">
+              <Home />
                 Página Inicial
-            </a>
-            <a href={`/${decodedToken.username}`} className="flex items-center gap-2">
-                <User />
-                Meu perfil
-            </a>
+            </Link>
+            <Link href={`/${decodedToken.username}`}  className="flex items-center gap-2">
+              <User />
+              Meu perfil
+            </Link>
+            <Link href={`/${decodedToken.username}/notifications`} className="flex items-center gap-2">
+              <Bell />
+              Notificações
+            </Link>
             <Button variant={"destructive"} className="w-[100px] hidden sm:flex" asChild>
               <Link href="/logout">Sair</Link>
             </Button>

@@ -22,39 +22,13 @@ export default function Page({ params }: { params: { username: string } }) {
       } return ""
     })
 
-    const fetchImage = async (imagePath) => {
-      try {
-        // Make the GET request with authorization headers
-        const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
-          method: 'GET',
-          headers: {
-            // Replace 'your_access_token' with your actual access token
-            "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            'Authorization': "Bearer " + token,
-          }
-        });
-
-        // Check if the request was successful
-        if (res.ok) {
-          // Get the image URL from the response
-          const imageUrl = await res.blob();
-          // Convert blob to URL
-          setImageUrl(URL.createObjectURL(imageUrl));
-        } else {
-          console.error('Failed to fetch image:', res.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
+    
 
     const fetchData = async() => {
         if(hasUser) return;
         const res = await fetch(`http://127.0.0.1:8000/u/following`, {
           method: "GET",
           headers: {
-            // Replace 'your_access_token' with your actual access token
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Origin": "*",
             'Authorization': "Bearer " + token,
@@ -78,12 +52,12 @@ export default function Page({ params }: { params: { username: string } }) {
       <FollowTabs username={params.username} active="following" />
       {following ?
         <div className="py-4 flex flex-col gap-4">
-            <FollowList following={following}/>
+            <FollowList following={following} token={token}/>
         </div>
          : 
-        <div className="flex items-center gap-2 p-4">
-          <h1 className="text-4xl font-bold">Você não possui seguidores</h1>
-          <span className="font-light text-4xl text-slate-400">:Todos que seguirem sua conta aparecerão aqui </span>
+        <div className="flex flex-col items-center gap-2 p-4">
+          <h1 className="text-4xl font-bold text-left">Você não segue nenhuma conta :(</h1>
+          <span className="font-light text-4xl text-left text-slate-400">Todas as contas que você seguir aparecerão aqui.</span>
         </div>
       }
     </div>
