@@ -11,8 +11,10 @@ export default function Page({params} : {params: {username: string}}) {
     const [postsGroup, setPostsGroup] = useState({posts: [], name: ""});
     const [imageUrl, setImageUrl] = useState('')
     const [id, setId] = useState("")
+    const [userId, setUserId] = useState('')
     const [name, setName] = useState("")
     const [bio, setBio] = useState("")
+    const [isFollowing, setIsFollowing] = useState(false)
     const [following, setFollowing] = useState([])
     const [followers, setFollowers] = useState([])
     const [imagePath, setImagePath] = useState("")
@@ -25,6 +27,20 @@ export default function Page({params} : {params: {username: string}}) {
         return localStorage.getItem("accessToken") 
       } return ""
     })
+
+    const fetchLoggedUserId = async() => {
+      const decodedToken = jwtDecode(String(token))
+      const res = await fetch(`http://127.0.0.1:8000/user/${decodedToken.username}`, {
+        method: "GET",
+      })
+      if(res.ok) {
+        const info = await res.json()
+        setUserId(info.data.id)
+      }
+          
+      
+      
+    }
     
     const fetchPosts = async () => {
       const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
@@ -88,14 +104,19 @@ export default function Page({params} : {params: {username: string}}) {
           setFollowing(info.data.following)
           setFollowers(info.data.followers)
           setHasUser(true)
+          fetchLoggedUserId()
           fetchPosts()
           fetchDefaultBadges()
           fetchImage(info.data.imagePath)
-          
           const decodedToken = jwtDecode(String(token))
           const authUsername = decodedToken.username
-          setAuth(authUsername == params.username)
-        }
+          setAuth(authUsername === params.username)
+          // if(info.data.followers){
+          //   let followers = info.data.followers
+          //   console.log(followers)
+          // }
+        } 
+        
       }
 
     fetchData()
@@ -105,7 +126,7 @@ export default function Page({params} : {params: {username: string}}) {
     if(!hasUser){
         return (
             <div>
-                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} following={following} followers={followers}></ProfileHeader>
+                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} following={following} followers={followers} isFollowing={isFollowing}></ProfileHeader>
                 <div className="flex flex-col justify-center items-start gap-2">
                     <h1 className="text-5xl font-bold">Essa conta não existe</h1>
                     <span className="font-light text-slate-400">Tente procurar outra conta</span>
@@ -118,7 +139,7 @@ export default function Page({params} : {params: {username: string}}) {
 
     return (
         <div>
-        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} following={following} followers={followers}></ProfileHeader>
+        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} followers={followers} userId={userId} isFollowing={isFollowing}></ProfileHeader>
         <ProfileTabs username={params.username} active="posts" />
         {auth && <PostMaker name={name} username={params.username} imageUrl={imageUrl}/>}
         {postsGroup.posts.length > 0 && 

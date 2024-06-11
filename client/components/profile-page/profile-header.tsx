@@ -28,6 +28,7 @@ type Badge = {
     username: string,
     bio: string, 
     id: string,
+    userId: string,
     imagePath: string,
     badges: (Badge)[] ,
     defaultBadges: (string | number)[],
@@ -36,23 +37,24 @@ type Badge = {
     token: string
     followers: (string)[]
     following: (string)[]
+    isFollowing: boolean
   }
-
 
   
 
 
-  const ProfileHeader = ({name, username, bio, id, auth, imagePath, badges, defaultBadges, imageUrl, token, following, followers}: IProfileHeaderParams) => {
-      const [isFollowing, setIsFollowing] = useState(false);
-
-      useEffect(() => {
-        return () => URL.revokeObjectURL(imageUrl)
-      }, [])
-
+  const ProfileHeader = ({name, username, bio, id, userId, auth, imagePath, badges, defaultBadges, imageUrl, token, following, followers, isFollowing}: IProfileHeaderParams) => {
+    useEffect(() => {
+      return () => {
+        if (imageUrl) {
+          URL.revokeObjectURL(imageUrl);
+        }
+      };
+    }, [imageUrl])
       
 
       const handleFollowClick = () => {
-          const followUrl = !isFollowing ? `http://localhost:8000/user/add-follow/${id}` : `http://localhost:8000/user/remove-follower/${id}`
+          const followUrl = isFollowing ?  `http://localhost:8000/user/remove-follower/${id}` : `http://localhost:8000/user/add-follow/${id}` 
           fetch(followUrl, 
             {
               method: "POST",
@@ -66,8 +68,8 @@ type Badge = {
           .then(res => res.json())
           .then(data => {
             console.log(data)
+            location.reload()
           })
-          setIsFollowing(!isFollowing);
         };
       
         
