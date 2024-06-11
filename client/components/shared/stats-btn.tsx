@@ -15,7 +15,7 @@ import {
 import { Award, BarChartBig, CalendarDays, Folders, Heart, MessageCircle, MessageCircleReply, Newspaper } from "lucide-react"
 import { useState, useEffect } from 'react';
 
-interface UserStats {
+interface IUserStats {
     liked_posts_count: number;
     commments_made: number;
     replys_recieved: number;
@@ -26,7 +26,7 @@ interface UserStats {
   }
 
 
-  const StatsButton: React.FC = () => {
+  const StatsButton = ( {}: IUserStats ) => {
 
     const [userStats, setUserStats] = useState({});
     const [badges, setBadges] = useState([])
@@ -40,7 +40,7 @@ interface UserStats {
               throw new Error('Erro ao buscar estatísticas do usuário');
             }
           
-            const data: UserStats = await response.json();
+            const data: IUserStats = await response.json();
             setBadges(data.badges)
             setUserStats(data);
             if (response.ok) {

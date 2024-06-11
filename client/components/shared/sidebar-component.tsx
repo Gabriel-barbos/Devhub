@@ -8,8 +8,15 @@ import Link from "next/link";
 import StatsButton from "./stats-btn";
 import { useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import EditAccount from "./edit-credentials";
 
-const Sidebar = () => {
+interface IEditAccountParams{
+  email: string,
+  id: string,
+  password: string
+}
+
+const Sidebar = ({email,password,id}: IEditAccountParams) => {
   const [token, setToken] = useState(() => {
     if(typeof window !== "undefined"){
       return localStorage.getItem("accessToken") 
@@ -36,8 +43,8 @@ const Sidebar = () => {
           <div className="sm:mt-auto sm:block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
-              <EditButton email={undefined} id={undefined} password={undefined} />
-               <StatsButton></StatsButton>
+<EditAccount email={email} password={password} id={id} />
+               <StatsButton liked_posts_count={0} commments_made={0} replys_recieved={0} articles_count={0} projects_count={0} created_at={undefined} badges={undefined}></StatsButton>
             </div>
           </div>
         </div>
