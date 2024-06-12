@@ -1,39 +1,93 @@
 "use client"
 
-import ProfileTabs from "@/components/profile-page/profile-tabs";
 import ProfileHeader from "@/components/profile-page/profile-header"
+import PostsList from "@/components/shared/posts-list"
+import ProfileTabs from "@/components/profile-page/profile-tabs"
+import PostMaker from "@/components/shared/post-maker";
 import ArticleList from "@/components/shared/article-list";
 import ArticleMaker from "@/components/shared/article-maker";
-import { useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useState, useEffect } from "react";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+
+interface IUserStats {
+  liked_posts_count: number;
+  comments_made: number;
+  replies_received: number;
+  articles_count: number;
+  projects_count: number;
+  created_at: string;
+  badges: number;
+}
+
+interface IPayload extends JwtPayload{
+  username: string
+}
+
 export default function Page({params} : {params: {username: string}}) {
   
     const [articlesGroup, setArticlesGroup] = useState({articles: [], name: ""});
     const [imageUrl, setImageUrl] = useState('')
     const [id, setId] = useState("")
+    const [userId, setUserId] = useState('')
     const [name, setName] = useState("")
     const [bio, setBio] = useState("")
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [following, setFollowing] = useState([])
+    const [followers, setFollowers] = useState([])
     const [imagePath, setImagePath] = useState("")
     const[defaultBadges, setDefaultBadges] = useState([])
     const [badges, setBadges] = useState([])
     const [hasUser, setHasUser] = useState(false)
     const [auth, setAuth] = useState(false);
-    const [token, setToken] = useState(() => {
-      if(typeof window !== "undefined"){
-        return localStorage.getItem("accessToken") 
-      } return ""
-    })
+    const [token, setToken] = useState<string | null>(() => {
+      return localStorage.getItem("accessToken") 
+  })
 
-    // const fetchPosts = async () => {
-    //   const res = await fetch(`http://127.0.0.1:8000/user/${params.username}/posts`, {
-    //       method: "GET",
-    //     })
-    //     if(res.ok) {
-    //       const {name, posts} = await res.json()
-    //       setPostsGroup({posts: posts, name: name});
-    //     }
-    // }
+    useEffect(() => {
+      fetchData()
+      let isUserFollowing = false;
+      if(followers){
+        for (let i = 0; i < followers.length; i++) {
+          if (userId === followers[i]) {
+            isUserFollowing = true
+            break
+          }
+        }
+      }
+      setIsFollowing(isUserFollowing); 
+    }, [userId, followers]);
 
+    const fetchUserStats = async () => {
+      const res = await fetch('http://localhost:8000/analytics', {
+        method: 'GET',
+        headers: {
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          'Authorization': "Bearer " + token,
+        }
+      });
+
+      if(res.ok){
+        const stats: IUserStats = await res.json()
+      }
+    }
+
+          
+      
+
+
+    const fetchLoggedUserId = async() => {
+      const decodedToken: IPayload = jwtDecode(String(token))
+      const res = await fetch(`http://127.0.0.1:8000/user/${decodedToken.username}`, {
+        method: "GET",
+      })
+      if(res.ok) {
+        const info = await res.json()
+        setUserId(info.data.id)
+      }
+    }
+    
+    
     const fetchDefaultBadges = async() => {
       const res = await fetch("http://127.0.0.1:8000/badges", {
               method: "GET",
@@ -44,7 +98,7 @@ export default function Page({params} : {params: {username: string}}) {
             }
     }
 
-    const fetchImage = async (imagePath) => {
+    const fetchImage = async (imagePath: string) => {
       try {
         // Make the GET request with authorization headers
         const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
@@ -73,6 +127,7 @@ export default function Page({params} : {params: {username: string}}) {
 
     const fetchData = async() => {
         if(hasUser) return;
+        fetchLoggedUserId()
         const res = await fetch(`http://127.0.0.1:8000/user/${params.username}`, {
           method: "GET",
         })
@@ -83,25 +138,26 @@ export default function Page({params} : {params: {username: string}}) {
           setId(info.data.id)
           setImagePath(info.data.imagePath)
           setBadges(info.data.badges)
+          setFollowing(info.data.following)
+          setFollowers(info.data.followers)
           setHasUser(true)
-        //   fetchPosts()
           fetchDefaultBadges()
           fetchImage(info.data.imagePath)
-          
-          const decodedToken = jwtDecode(String(token))
+          fetchUserStats()
+          const decodedToken: IPayload = jwtDecode(String(token))
           const authUsername = decodedToken.username
-          setAuth(authUsername == params.username)
-        }
+          setAuth(authUsername === params.username)
+          
+        } 
+        
       }
 
-    fetchData()
-
-
+    
 
     if(!hasUser){
         return (
             <div>
-                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
+                <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} following={following} followers={followers} userId={userId} isFollowing={isFollowing}></ProfileHeader>
                 <div className="flex flex-col justify-center items-start gap-2">
                     <h1 className="text-5xl font-bold">Essa conta não existe</h1>
                     <span className="font-light text-slate-400">Tente procurar outra conta</span>
@@ -114,13 +170,13 @@ export default function Page({params} : {params: {username: string}}) {
 
     return (
         <div>
-        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl}></ProfileHeader>
-        <ProfileTabs username={params.username} active={"articles"}/>
+        <ProfileHeader auth={auth} name={name} username={params.username} bio={bio} id={id} imagePath={imagePath} badges={badges} defaultBadges={defaultBadges} imageUrl={imageUrl} token={token} following={following} followers={followers} userId={userId} isFollowing={isFollowing}></ProfileHeader>
+        <ProfileTabs username={params.username} active="posts" />
         {auth && <ArticleMaker name={name} username={params.username} imageUrl={imageUrl}/>}
         {articlesGroup.articles.length > 0 &&
         <ArticleList name={name} articles={articlesGroup.articles} auth={auth} imageUrl={imageUrl}/>
         }
+        
         </div>
        );
   }
-  

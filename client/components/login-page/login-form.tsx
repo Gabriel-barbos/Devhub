@@ -24,38 +24,42 @@ import { Input } from "@/components/ui/input";
 import { profile } from 'console';
 import { JwtPayload } from 'jwt-decode';
 
-// Open IndexedDB database
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("devhub", 1);
-
-    request.onerror = function(event) {
-      reject("Error opening database.");
-    };
-
-    request.onsuccess = function(event) {
-      const db = event.target.result;
-      resolve(db);
-    };
-
-    request.onupgradeneeded = function(event) {
-      const db = event.target.result;
-      const objectStore = db.createObjectStore("tokens", { keyPath: "token" });
-    };
-  });
+interface IPayload extends JwtPayload{
+  username: string
 }
+
+// Open IndexedDB database
+// function openDB() {
+//   return new Promise((resolve, reject) => {
+//     const request = indexedDB.open("devhub", 1);
+
+//     request.onerror = function(event) {
+//       reject("Error opening database.");
+//     };
+
+//     request.onsuccess = function(event) {
+//       const db = event.target.result;
+//       resolve(db);
+//     };
+
+//     request.onupgradeneeded = function(event) {
+//       const db = event.target.result;
+//       const objectStore = db.createObjectStore("tokens", { keyPath: "token" });
+//     };
+//   });
+// }
 
 // Save token to IndexedDB
-async function saveTokenToDB(token) {
-  const db = await openDB();
-  const transaction = db.transaction(["tokens"], "readwrite");
-  const store = transaction.objectStore("tokens");
-  const request = store.add({ token: token });
+// async function saveTokenToDB(token) {
+//   const db = await openDB();
+//   const transaction = db.transaction(["tokens"], "readwrite");
+//   const store = transaction.objectStore("tokens");
+//   const request = store.add({ token: token });
   
-  request.onerror = function(event) {
-    console.error("Error saving token to database.");
-  };
-}
+//   request.onerror = function(event) {
+//     console.error("Error saving token to database.");
+//   };
+// }
 
 const UserLogin = z.object({
   username: z.string().email({message: "Email inválido"}),
@@ -94,8 +98,8 @@ export function LoginForm() {
       if(response.ok) {
         const data = await response.json();
         localStorage.setItem("accessToken", data.token);
-        saveTokenToDB(data.token); // Save token to IndexedDB
-        const decodedToken = jwtDecode(data.token);
+        // saveTokenToDB(data.token); // Save token to IndexedDB
+        const decodedToken: IPayload = jwtDecode(data.token);
         router.push(`${decodedToken.username}`);
         setFormSubmitted(true);
       }

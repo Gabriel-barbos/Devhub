@@ -19,12 +19,16 @@ interface IFollowCardParams {
   imagePath: string
   bio: string
   isFollowing: boolean
-  token: string
+  token: string | null
   id: string
+  userId: string
 }
 
-export default function FollowCard({username, name, imagePath, bio, isFollowing, token, id}: IFollowCardParams){
+export default function FollowCard({username, name, imagePath, bio, isFollowing, token, id, userId}: IFollowCardParams){
     const[imageUrl, setImageUrl] = useState('')
+    const showBtn = () => {
+      return !(id === userId)
+    }
     const fetchImage = async (imagePath: string) => {
         try {
           const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
@@ -81,7 +85,8 @@ export default function FollowCard({username, name, imagePath, bio, isFollowing,
                     <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight"><span>{name}</span> <Link href={`/${username}`} className="text-muted-foreground">@{username}</Link>
                     </CardTitle>
                 </div>
-               { isFollowing ? <Button variant="destructive"className="w-[150px]" onClick={handleFollowClick}>Deixar de seguir</Button> : <Button variant="outline"className="w-[150px]" onClick={handleFollowClick}>Seguir</Button> }
+                {showBtn() && (isFollowing ? <Button variant="destructive"className="w-[150px]" onClick={handleFollowClick}>Deixar de seguir</Button> : <Button variant="outline"className="w-[150px]" onClick={handleFollowClick}>Seguir</Button>)
+                }
             </CardHeader>
             <CardContent>
                 {bio && truncateBio(bio, 5)}

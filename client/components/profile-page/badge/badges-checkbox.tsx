@@ -23,8 +23,18 @@ import { useState, useEffect } from "react"
 const FormSchema = z.object({
   badges: z.array(z.number()),
 })
+
+type Badge = {
+  _id: number
+  name: string
+}
+
+interface IBadgesCheckboxParams {
+  badges: (Badge)[],
+  defaultBadges: (Badge)[]
+}
  
-export function BadgesCheckbox({defaultBadges}) {
+export function BadgesCheckbox({defaultBadges, badges}: IBadgesCheckboxParams) {
   const [token, setToken] = useState("")
 
     useEffect(() => {
@@ -33,7 +43,7 @@ export function BadgesCheckbox({defaultBadges}) {
 
 
 
-  const badges = defaultBadges
+  const badgesList = defaultBadges
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -72,7 +82,7 @@ export function BadgesCheckbox({defaultBadges}) {
           name="badges"
           render={() => (
             <FormItem>
-              {badges.map((item: object) => (
+              {badgesList.map((item: Badge) => (
                 <FormField
                   key={item._id}
                   control={form.control}

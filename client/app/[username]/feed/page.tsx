@@ -18,11 +18,9 @@ export default function Page({ params }: { params: { username: string } }) {
   const [badges, setBadges] = useState([])
   const [hasUser, setHasUser] = useState(false)
   const [auth, setAuth] = useState(false);
-  const [token, setToken] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("accessToken")
-    } return ""
-  })
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("accessToken") 
+})
 
   const fetchPosts = async () => {
     const res = await fetch(`http://127.0.0.1:8000/following-feed`, {
@@ -40,32 +38,6 @@ export default function Page({ params }: { params: { username: string } }) {
       console.log(postsGroup)
     }
   }
-  const fetchImage = async (imagePath) => {
-    try {
-      // Make the GET request with authorization headers
-      const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
-        method: 'GET',
-        headers: {
-          // Replace 'your_access_token' with your actual access token
-          "Access-Control-Allow-Headers" : "Content-Type",
-          "Access-Control-Allow-Origin": "*",
-          'Authorization': "Bearer " + token,
-        }
-      });
-
-      // Check if the request was successful
-      if (res.ok) {
-        // Get the image URL from the response
-        const imageUrl = await res.blob();
-        // Convert blob to URL
-        setImageUrl(URL.createObjectURL(imageUrl));
-      } else {
-        console.error('Failed to fetch image:', res.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  };
 
   const fetchData = async() => {
     if(hasUser) return;
@@ -78,7 +50,6 @@ export default function Page({ params }: { params: { username: string } }) {
       setImagePath(info.data.imagePath)
       setHasUser(true)
       fetchPosts()
-      fetchImage(info.data.imagePath)
       
     }
   }

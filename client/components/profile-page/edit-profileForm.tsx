@@ -71,10 +71,10 @@ try{
 
 
 
-const imageSubmit = async (event) => {
+const imageSubmit = async (event: any) => {
   event.preventDefault()
   const formData = new FormData();
-  const file = fileInputRef.current.files[0]
+  const file: any = fileInputRef.current.files[0]!
   console.log(file)
   formData.append('file', file)
   try{

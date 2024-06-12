@@ -25,12 +25,19 @@ import {
 
 import { BadgesCheckbox } from "./badges-checkbox"
 
-interface IBadgeDialogParams {
-  badges: any,
-  defaultBadges: any
+
+type Badge = {
+  _id: number
+  name: string
+  imagePath?: string
 }
 
-export function BadgeDialog({badges, defaultBadges}) {
+interface IBadgeDialogParams {
+  badges: (Badge)[],
+  defaultBadges: (Badge)[]
+}
+
+export function BadgeDialog({badges, defaultBadges}: IBadgeDialogParams) {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -46,7 +53,7 @@ export function BadgeDialog({badges, defaultBadges}) {
                 <DialogHeader className="flex space-y-6">
                     <DialogTitle>Selecione quais badges você deseja.</DialogTitle>
                 </DialogHeader>
-                <BadgesCheckbox defaultBadges={defaultBadges} />
+                <BadgesCheckbox defaultBadges={defaultBadges} badges={badges} />
             </DialogContent>
         </Dialog>
     )
@@ -61,7 +68,7 @@ export function BadgeDialog({badges, defaultBadges}) {
         <DrawerHeader className="text-left">
           <DrawerTitle>Selecione quais badges você deseja.</DrawerTitle>
         </DrawerHeader>
-        <BadgesCheckbox userBadges={badges}/>
+        <BadgesCheckbox defaultBadges={defaultBadges} badges={badges}/>
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="destructive" className="w-[100px]">Cancelar</Button>

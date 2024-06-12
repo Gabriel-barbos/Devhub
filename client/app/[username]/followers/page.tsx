@@ -14,11 +14,9 @@ export default function Page({ params }: { params: { username: string } }) {
   const [userId, setUserId] = useState('')
   const [hasUser, setHasUser] = useState(false)
   const [auth, setAuth] = useState(false);
-  const [token, setToken] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("accessToken")
-    } return ""
-  })
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("accessToken") 
+})
   const fetchLoggedUserId = async() => {
     const decodedToken: IPayload = jwtDecode(String(token))
     const res = await fetch(`http://127.0.0.1:8000/user/${decodedToken.username}`, {
@@ -31,7 +29,7 @@ export default function Page({ params }: { params: { username: string } }) {
   }
   const fetchData = async () => {
     if (hasUser) return;
-    const res = await fetch(`http://127.0.0.1:8000/u/followers`, {
+    const res = await fetch(`http://127.0.0.1:8000/followers/${params.username}`, {
       method: "GET",
       headers: {
         "Access-Control-Allow-Headers": "Content-Type",
@@ -42,11 +40,11 @@ export default function Page({ params }: { params: { username: string } }) {
     if (res.ok) {
       const info = await res.json()
       setFollowers(info.followers)
-      setHasUser(true)
-      const decodedToken = jwtDecode(String(token))
+      const decodedToken: IPayload = jwtDecode(String(token))
       const authUsername = decodedToken.username
       setAuth(authUsername == params.username)
       fetchLoggedUserId()
+      setHasUser(true)
     }
   }
 
@@ -58,10 +56,10 @@ export default function Page({ params }: { params: { username: string } }) {
       <FollowTabs username={params.username} active="followers" />
       {followers ?
         <div className="py-4 flex flex-col gap-4">
-          <FollowList followers={followers} token={token} isFollowingPage={false} userId={userId} />
+          <FollowList followers={followers} token={token} isFollowingPage={false} userId={userId} auth={auth}/>
         </div> :
         <div className="flex items-center gap-2 p-4">
-          <h1 className="text-4xl font-bold">Você não possui seguidores :(</h1>
+          <h1 className="text-4xl font-bold">Você não possui seguidores :{"("}</h1>
           <span className="font-light text-4xl text-slate-400">Todos que seguirem sua conta aparecerão aqui </span>
         </div>
       }

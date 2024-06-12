@@ -16,8 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import { useToast } from "@/components/ui/use-toast"
 
+interface IArticleMarker {
+    name: string
+    username: string
+    imageUrl: string
+}
 
-const ArticleMaker = ({name, username, imageUrl}) => {
+const ArticleMaker = ({name, username, imageUrl}: IArticleMarker) => {
     
     const [content, setContent] = useState("");
     const [token, setToken] = useState("");

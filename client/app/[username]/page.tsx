@@ -7,15 +7,6 @@ import PostMaker from "@/components/shared/post-maker";
 import { useState, useEffect } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 
-interface IUserStats {
-  liked_posts_count: number;
-  comments_made: number;
-  replies_received: number;
-  articles_count: number;
-  projects_count: number;
-  created_at: string;
-  badges: number;
-}
 
 interface IPayload extends JwtPayload{
   username: string
@@ -37,11 +28,9 @@ export default function Page({params} : {params: {username: string}}) {
     const [badges, setBadges] = useState([])
     const [hasUser, setHasUser] = useState(false)
     const [auth, setAuth] = useState(false);
-    const [token, setToken] = useState(() => {
-      if(typeof window !== "undefined"){
-        return localStorage.getItem("accessToken") 
-      } return ""
-    })
+    const [token, setToken] = useState<string | null>(() => {
+      return localStorage.getItem("accessToken") 
+  })
 
     useEffect(() => {
       fetchData()
@@ -57,20 +46,6 @@ export default function Page({params} : {params: {username: string}}) {
       setIsFollowing(isUserFollowing); 
     }, [userId, followers]);
 
-    const fetchUserStats = async () => {
-      const res = await fetch('http://localhost:8000/analytics', {
-        method: 'GET',
-        headers: {
-          "Access-Control-Allow-Headers" : "Content-Type",
-          "Access-Control-Allow-Origin": "*",
-          'Authorization': "Bearer " + token,
-        }
-      });
-
-      if(res.ok){
-        const stats: IUserStats = await res.json()
-      }
-    }
 
           
       
@@ -153,7 +128,6 @@ export default function Page({params} : {params: {username: string}}) {
           fetchPosts()
           fetchDefaultBadges()
           fetchImage(info.data.imagePath)
-          fetchUserStats()
           const decodedToken: IPayload = jwtDecode(String(token))
           const authUsername = decodedToken.username
           setAuth(authUsername === params.username)

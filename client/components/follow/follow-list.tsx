@@ -21,14 +21,15 @@ type Followers = {
 }
 
 interface IFollowListParams {
-    following: (Following)[];
-    followers: (Followers)[];
+    following?: (Following)[];
+    followers?: (Followers)[];
     isFollowingPage: boolean
-    token: string
+    token: string | null
     userId: string
+    auth: boolean
 }
 
-const FollowList = ({ following, followers, token, isFollowingPage, userId}: IFollowListParams) => {
+const FollowList = ({ following, followers, token, isFollowingPage, userId, auth}: IFollowListParams) => {
     const checkIfFollowing = (follow: Following | Followers): boolean => {
         return follow.followers.includes(userId)
       };
@@ -36,10 +37,10 @@ const FollowList = ({ following, followers, token, isFollowingPage, userId}: IFo
         <div className="py-4 flex flex-col gap-4">
             {isFollowingPage ? following && following.map((follow, i) => {
                 const isFollowing = checkIfFollowing(follow)
-                return <FollowCard key={i} username={follow["username"]} name={follow["name"]} imagePath={follow["imagePath"]} bio={follow["bio"]} id={follow["id"]} isFollowing = {isFollowing} token={token} />
+                return <FollowCard key={i} username={follow["username"]} name={follow["name"]} imagePath={follow["imagePath"]} bio={follow["bio"]} id={follow["id"]} isFollowing = {isFollowing} token={token}  userId={userId} />
             }) : followers && followers.map((follow, i) => {
                 const isFollowing = checkIfFollowing(follow)
-                return <FollowCard key={i} username={follow["username"]} name={follow["name"]} imagePath={follow["imagePath"]} bio={follow["bio"]} id={follow["id"]} isFollowing = {isFollowing} token={token} />
+                return <FollowCard key={i} username={follow["username"]} name={follow["name"]} imagePath={follow["imagePath"]} bio={follow["bio"]} id={follow["id"]} isFollowing = {isFollowing} token={token} userId={userId}/>
             })}
         </div>
     )

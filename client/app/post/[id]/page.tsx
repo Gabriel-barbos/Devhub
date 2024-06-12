@@ -24,6 +24,10 @@ interface IComment {
     id: string
 }
 
+interface ICommentPostHandle extends React.KeyboardEvent<HTMLTextAreaElement> {
+    e: { key: string; target: { value: any; }; }
+}
+
 export default function Page({params} : {params: {id: string}}) {
     const [post, setPost] = useState<IPost>({});
     const [comments, setComments] = useState<IComment[]>([]);
@@ -55,11 +59,12 @@ export default function Page({params} : {params: {id: string}}) {
 
     // const decodedToken = jwtDecode(String(token))
 
-    const commentHandle = (e) => {
+    const commentHandle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setComment(e.target.value);
     }
 
-    const commentPostHandle = (e: { key: string; target: { value: any; }; }) => {
+
+    const commentPostHandle = (e: ICommentPostHandle) => {
         if(e.key != "Enter") return;
         fetch(`http://127.0.0.1:8000/post/comment/${params.id}`, {
             "method": "POST",
@@ -115,7 +120,7 @@ export default function Page({params} : {params: {id: string}}) {
                             <div key={i} className={"flex flex-col gap-1 mb-4"}>
                                 <span className="text-xs text-muted-foreground">@{comment.author_username} disse:</span>
                                 <p>{comment.content}</p>
-                                <Link href={`/post/${comment.id}`} className="text-xs text-sky-400 flex align-center gap-2 text-sm">-> Ver comentários</Link>
+                                <Link href={`/post/${comment.id}`} className="text-xs text-sky-400 flex align-center gap-2">{'->'} Ver comentários</Link>
                             </div>
                         )}
                     </div>

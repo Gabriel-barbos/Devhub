@@ -1,7 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import {
         Sheet,
         SheetContent,
@@ -17,12 +16,6 @@ import { useEffect, useState } from "react"
 import { ProfileBadges } from "./badge/profile-badges"
 import { BadgeDialog } from "./badge/badge-dialog"
 
-type Badge = {
-  _id: string
-  name: string
-  imagePath: string
-}
-
   interface IProfileHeaderParams {
     name: string;
     username: string;
@@ -30,8 +23,8 @@ type Badge = {
     id: string;
     userId: string;
     imagePath: string;
-    badges: (Badge)[];
-    defaultBadges: (string | number)[];
+    badges: [];
+    defaultBadges: [];
     auth: boolean;
     imageUrl: string;
     token: string | null;

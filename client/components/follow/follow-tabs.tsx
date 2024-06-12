@@ -1,4 +1,9 @@
-export default function FollowTabs({username, active}){
+interface IFollowTabsParams {
+    username: string
+    active: string
+}
+
+export default function FollowTabs({username, active}: IFollowTabsParams){
     return (
     <div className="flex sticky top-0 py-4 bg-gradient-to-b from-background to-transparent">
         <a href={`/${username}/followers`} className={`flex-1 text-center text-base text-neutral-400 ${active == "followers" && "font-semibold !text-white"}`}>Seguidores</a>

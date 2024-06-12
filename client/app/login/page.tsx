@@ -20,7 +20,7 @@ export default function Page() {
             </Link>
           </div>
           <div className="mt-4 text-center text-sm">
-            <ForgetPasswordDialog />
+            {/* <ForgetPasswordDialog /> */}
           </div>
         </div>
       </div>

@@ -17,7 +17,23 @@ import relativeTime from "@/lib/utils/relativeTime";
 import DeletePostBtn from "./delete-post-btn";
 import Link from 'next/link'
 
-const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply_to}) => {
+interface User {
+    username: string
+    name: string
+}
+
+interface IPost  {
+    user: User
+    likes_count: number
+    content: string
+    created_at: string
+    id: string
+    auth: boolean
+    imageUrl: string
+    reply_to: string
+}
+
+const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply_to}: IPost) => {
     interface IPostReplied {
         author_username?: string
     }
@@ -55,7 +71,7 @@ const Post = ({user, likes_count, content, created_at, id, auth, imageUrl, reply
                         <AvatarImage src={imageUrl} /> 
                         <AvatarFallback>{avatarFallbacker(user.name)}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight" asChild> <Link href={`/${user.username}`}>@{user.username}</Link>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight"> <Link href={`/${user.username}`}>@{user.username}</Link>
 
                     </CardTitle>
                 </div>

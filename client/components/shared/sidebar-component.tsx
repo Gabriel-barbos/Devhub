@@ -7,23 +7,55 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import StatsButton from "./stats-btn";
 import { useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import EditAccount from "./edit-credentials";
 
+interface IPayload extends JwtPayload{
+  username: string
+}
+
 interface IEditAccountParams{
-  email: string,
-  id: string,
+  email: string
+  id: string
   password: string
 }
 
-const Sidebar = ({email,password,id}: IEditAccountParams) => {
-  const [token, setToken] = useState(() => {
-    if(typeof window !== "undefined"){
-      return localStorage.getItem("accessToken") 
-    } return ""
-  })
-  const decodedToken = jwtDecode(String(token))
+interface IUserStats {
+  liked_posts_count?: number;
+  comments_made?: number;
+  replies_received?: number;
+  articles_count?: number;
+  projects_count?: number;
+  created_at?: string;
+  badges?: [];
+}
 
+const Sidebar = ({email,password,id}: IEditAccountParams) => {
+  
+  const [hasUser, setHasUser] = useState(false)
+  const [stats, setStats] = useState<IUserStats | null>([])
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("accessToken") 
+})
+  const decodedToken: IPayload = jwtDecode(String(token))
+  const fetchUserStats = async () => {
+    if(hasUser) return
+    const res = await fetch('http://localhost:8000/analytics', {
+      method: 'GET',
+      headers: {
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        'Authorization': "Bearer " + token,
+      }
+    });
+    if(res.ok){
+      const stats: IUserStats = await res.json()
+      setStats(stats)
+      setHasUser(true)
+    }
+  }
+
+  fetchUserStats()
     return (
         <div className={"p-8 sm:h-screen relative flex sm:flex-col items-center sm:items-start justify-between"}>
           <h1 className="font-black sm:text-6xl md:text-2xl dark:text-slate-50">devhub</h1>
@@ -47,8 +79,8 @@ const Sidebar = ({email,password,id}: IEditAccountParams) => {
           <div className="sm:mt-auto sm:block">
             <div className="flex items-center space-x-2">
                 <ThemeToggle />
-<EditAccount email={email} password={password} id={id} />
-               <StatsButton liked_posts_count={0} commments_made={0} replys_recieved={0} articles_count={0} projects_count={0} created_at={undefined} badges={undefined}></StatsButton>
+                <EditAccount email={email} password={password} id={id} />
+               <StatsButton liked_posts_count={stats?.liked_posts_count} comments_made={stats?.comments_made} replies_received={stats?.replies_received} articles_count={stats?.articles_count} projects_count={stats?.projects_count} created_at={stats?.created_at} badges={stats?.badges}></StatsButton>
             </div>
           </div>
         </div>

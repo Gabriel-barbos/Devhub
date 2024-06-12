@@ -16,7 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import { useToast } from "@/components/ui/use-toast"
 
-const PostMaker = ({name, username, imageUrl}) => {
+interface IPostMaker {
+    name: string
+    username: string
+    imageUrl: string
+}
+
+const PostMaker = ({name, username, imageUrl}: IPostMaker) => {
 
     const [content, setContent] = useState("");
     const [token, setToken] = useState("");

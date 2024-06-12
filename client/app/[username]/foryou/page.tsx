@@ -18,11 +18,9 @@ export default function Page({params} : {params: {username: string}}) {
     const [badges, setBadges] = useState([])
     const [hasUser, setHasUser] = useState(false)
     const [auth, setAuth] = useState(false);
-    const [token, setToken] = useState(() => {
-      if(typeof window !== "undefined"){
-        return localStorage.getItem("accessToken") 
-      } return ""
-    })
+    const [token, setToken] = useState<string | null>(() => {
+      return localStorage.getItem("accessToken") 
+  })
 
     const fetchPosts = async () => {
       const res = await fetch(`http://127.0.0.1:8000/posts`, {
