@@ -10,7 +10,7 @@ interface Posts extends Array<any>{
 }
 
 interface IPostsListParams {
-    posts: Posts
+    posts: Posts | never[]
     name: string
     auth: boolean
     imageUrl: string

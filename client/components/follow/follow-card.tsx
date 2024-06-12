@@ -89,7 +89,7 @@ export default function FollowCard({username, name, imagePath, bio, isFollowing,
                 }
             </CardHeader>
             <CardContent>
-                {bio && truncateBio(bio, 5)}
+                {bio && truncateBio(bio, 30)}
             </CardContent>
         </Card>
         </>

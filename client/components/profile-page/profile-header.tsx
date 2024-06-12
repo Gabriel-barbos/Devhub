@@ -23,8 +23,8 @@ import { BadgeDialog } from "./badge/badge-dialog"
     id: string;
     userId: string;
     imagePath: string;
-    badges: [];
-    defaultBadges: [];
+    badges: [] | never[];
+    defaultBadges: [] | never[];
     auth: boolean;
     imageUrl: string;
     token: string | null;
@@ -122,7 +122,7 @@ import { BadgeDialog } from "./badge/badge-dialog"
               )}
             </div>
           </div>
-          <div className="mt-6 mb-8">
+          <div className="mt-6 mb-8 max-w-[600px] ">
             <p className="text-base">{bio}</p>
           </div>
         </>

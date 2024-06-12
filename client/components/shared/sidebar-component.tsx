@@ -33,7 +33,7 @@ interface IUserStats {
 const Sidebar = ({email,password,id}: IEditAccountParams) => {
   
   const [hasUser, setHasUser] = useState(false)
-  const [stats, setStats] = useState<IUserStats | null>([])
+  const [stats, setStats] = useState<IUserStats | any>([])
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem("accessToken") 
 })
