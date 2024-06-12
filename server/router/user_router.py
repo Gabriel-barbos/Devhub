@@ -106,11 +106,11 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
      return {"message": "Usuário deletado com sucesso!"}
 
 
-@user_router.get("/u/followers/")
-def get_followers(current_user = Depends(UserController.get_current_user)):
+@user_router.get("followers/{username}")
+def get_followers(username: str):
     try:
         #* Busca o usuário pelo ID
-        user = current_user
+        user = username
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -127,11 +127,11 @@ def get_followers(current_user = Depends(UserController.get_current_user)):
     except:
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ocorreu um erro inesperado ao consultar seguidores")
 
-@user_router.get("/u/following/")
-def get_followers(current_user = Depends(UserController.get_current_user)):
+@user_router.get("/following/{username}")
+def get_followers(username: str):
     try:
         #* Busca o usuário pelo ID
-        user = current_user
+        user = username
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
