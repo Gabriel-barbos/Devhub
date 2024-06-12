@@ -110,7 +110,7 @@ def delete_user(id:str,current_user: str = Depends(UserController.get_current_us
 def get_followers(username: str):
     try:
         #* Busca o usuário pelo ID
-        user = username
+        user = usersCollection.find_one({'username': username})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -131,7 +131,7 @@ def get_followers(username: str):
 def get_followers(username: str):
     try:
         #* Busca o usuário pelo ID
-        user = username
+        user = usersCollection.find_one({'username': username})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
