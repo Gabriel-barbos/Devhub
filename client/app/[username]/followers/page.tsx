@@ -3,74 +3,54 @@
 import ProfileHeader from "@/components/profile-page/profile-header"
 import PostsList from "@/components/shared/posts-list"
 import FollowTabs from "@/components/follow/follow-tabs";
+import FollowList from "@/components/follow/follow-list";
 import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+interface IPayload extends JwtPayload{
+  username: string
+}
 export default function Page({ params }: { params: { username: string } }) {
-
- 
-    const [imageUrl, setImageUrl] = useState('')
-    const [id, setId] = useState("")
-    const [name, setName] = useState("")
-    const [bio, setBio] = useState("")
-    const [followers, setFollowers] = useState([])
-    const [imagePath, setImagePath] = useState("")
-    const [hasUser, setHasUser] = useState(false)
-    const [auth, setAuth] = useState(false);
-    const [token, setToken] = useState(() => {
-      if(typeof window !== "undefined"){
-        return localStorage.getItem("accessToken") 
-      } return ""
+  const [followers, setFollowers] = useState([])
+  const [userId, setUserId] = useState('')
+  const [hasUser, setHasUser] = useState(false)
+  const [auth, setAuth] = useState(false);
+  const [token, setToken] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("accessToken")
+    } return ""
+  })
+  const fetchLoggedUserId = async() => {
+    const decodedToken: IPayload = jwtDecode(String(token))
+    const res = await fetch(`http://127.0.0.1:8000/user/${decodedToken.username}`, {
+      method: "GET",
     })
-
-    const fetchImage = async (imagePath) => {
-      try {
-        // Make the GET request with authorization headers
-        const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
-          method: 'GET',
-          headers: {
-            // Replace 'your_access_token' with your actual access token
-            "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            'Authorization': "Bearer " + token,
-          }
-        });
-
-        // Check if the request was successful
-        if (res.ok) {
-          // Get the image URL from the response
-          const imageUrl = await res.blob();
-          // Convert blob to URL
-          setImageUrl(URL.createObjectURL(imageUrl));
-        } else {
-          console.error('Failed to fetch image:', res.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching image:', error);
+    if(res.ok) {
+      const info = await res.json()
+      setUserId(info.data.id)
+    }
+  }
+  const fetchData = async () => {
+    if (hasUser) return;
+    const res = await fetch(`http://127.0.0.1:8000/u/followers`, {
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        'Authorization': "Bearer " + token,
       }
-    };
+    })
+    if (res.ok) {
+      const info = await res.json()
+      setFollowers(info.followers)
+      setHasUser(true)
+      const decodedToken = jwtDecode(String(token))
+      const authUsername = decodedToken.username
+      setAuth(authUsername == params.username)
+      fetchLoggedUserId()
+    }
+  }
 
-    const fetchData = async() => {
-        if(hasUser) return;
-        const res = await fetch(`http://127.0.0.1:8000/u/followers}`, {
-          method: "GET",
-        })
-        if(res.ok) {
-          const info = await res.json()
-          setName(info.data.name)
-          setBio(info.data.bio)
-          setId(info.data.id)
-          setImagePath(info.data.imagePath)
-          setFollowers(info.data.followers)
-          setHasUser(true)
-          fetchImage(info.data.imagePath)
-          
-          const decodedToken = jwtDecode(String(token))
-          const authUsername = decodedToken.username
-          setAuth(authUsername == params.username)
-        }
-      }
-
-    fetchData()
+  fetchData()
 
 
   return (
@@ -78,12 +58,8 @@ export default function Page({ params }: { params: { username: string } }) {
       <FollowTabs username={params.username} active="followers" />
       {followers ?
         <div className="py-4 flex flex-col gap-4">
-            {followers.map((follower, i) => {
-                return <p>
-                nome: {name}, bio: {bio}, username: @{params.username}
-              </p>
-            })}
-        </div> : 
+          <FollowList followers={followers} token={token} isFollowingPage={false} userId={userId} />
+        </div> :
         <div className="flex items-center gap-2 p-4">
           <h1 className="text-4xl font-bold">Você não possui seguidores :(</h1>
           <span className="font-light text-4xl text-slate-400">Todos que seguirem sua conta aparecerão aqui </span>

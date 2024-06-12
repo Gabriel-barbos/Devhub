@@ -13,26 +13,30 @@ import avatarFallbacker from "@/lib/utils/avatarFallbacker";
 import truncateBio from "@/lib/utils/truncateBio";
 import Link from "next/link";
 
-export default function FollowCard({username, name, imagePath, bio, isFollowing, token}){
+interface IFollowCardParams {
+  username: string
+  name: string
+  imagePath: string
+  bio: string
+  isFollowing: boolean
+  token: string
+  id: string
+}
+
+export default function FollowCard({username, name, imagePath, bio, isFollowing, token, id}: IFollowCardParams){
     const[imageUrl, setImageUrl] = useState('')
-    const fetchImage = async (imagePath) => {
+    const fetchImage = async (imagePath: string) => {
         try {
-          // Make the GET request with authorization headers
           const res = await fetch(`http://localhost:8000/images/${imagePath}`, {
             method: 'GET',
             headers: {
-              // Replace 'your_access_token' with your actual access token
               "Access-Control-Allow-Headers" : "Content-Type",
               "Access-Control-Allow-Origin": "*",
               'Authorization': "Bearer " + token,
             }
           });
-  
-          // Check if the request was successful
           if (res.ok) {
-            // Get the image URL from the response
             const imageUrl = await res.blob();
-            // Convert blob to URL
             setImageUrl(URL.createObjectURL(imageUrl));
             console.log(imageUrl)
           } else {
@@ -42,10 +46,29 @@ export default function FollowCard({username, name, imagePath, bio, isFollowing,
           console.error('Error fetching image:', error);
         }
       };
+      const handleFollowClick = () => {
+        const followUrl = isFollowing ?  `http://localhost:8000/user/remove-follower/${id}` : `http://localhost:8000/user/add-follow/${id}` 
+        fetch(followUrl, 
+          {
+            method: "POST",
+            headers:{
+              "Access-Control-Allow-Headers" : "Content-Type",
+              "Access-Control-Allow-Origin": "*",
+              "Authorization":` Bearer ${token}`
+              },
+          }
+        )
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          location.reload()
+        })
+      };
     useEffect(() => {
         fetchImage(imagePath)
         return () => URL.revokeObjectURL(imageUrl)
       }, [])
+
     return (
         <>
         <Card>
@@ -55,10 +78,10 @@ export default function FollowCard({username, name, imagePath, bio, isFollowing,
                         {imageUrl && <AvatarImage src={imageUrl} />}
                         <AvatarFallback>{avatarFallbacker(name)}</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight" asChild><span>{name}</span> <Link href={`/${username}`} className="text-muted-foreground">@{username}</Link>
+                    <CardTitle className="scroll-m-20 text-base leading-7 tracking-tight"><span>{name}</span> <Link href={`/${username}`} className="text-muted-foreground">@{username}</Link>
                     </CardTitle>
                 </div>
-                {isFollowing && <Button variant="destructive"className="w-[150px]">Deixar de seguir</Button>}
+               { isFollowing ? <Button variant="destructive"className="w-[150px]" onClick={handleFollowClick}>Deixar de seguir</Button> : <Button variant="outline"className="w-[150px]" onClick={handleFollowClick}>Seguir</Button> }
             </CardHeader>
             <CardContent>
                 {bio && truncateBio(bio, 5)}

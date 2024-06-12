@@ -24,20 +24,20 @@ type Badge = {
 }
 
   interface IProfileHeaderParams {
-    name: string,
-    username: string,
-    bio: string, 
-    id: string,
-    userId: string,
-    imagePath: string,
-    badges: (Badge)[] ,
-    defaultBadges: (string | number)[],
-    auth: boolean
-    imageUrl: string
-    token: string
-    followers: (string)[]
-    following: (string)[]
-    isFollowing: boolean
+    name: string;
+    username: string;
+    bio: string;
+    id: string;
+    userId: string;
+    imagePath: string;
+    badges: (Badge)[];
+    defaultBadges: (string | number)[];
+    auth: boolean;
+    imageUrl: string;
+    token: string | null;
+    followers: (string)[];
+    following: (string)[];
+    isFollowing: boolean;
   }
 
   
@@ -45,14 +45,9 @@ type Badge = {
 
   const ProfileHeader = ({name, username, bio, id, userId, auth, imagePath, badges, defaultBadges, imageUrl, token, following, followers, isFollowing}: IProfileHeaderParams) => {
     useEffect(() => {
-      return () => {
-        if (imageUrl) {
-          URL.revokeObjectURL(imageUrl);
-        }
-      };
-    }, [imageUrl])
+      return () => URL.revokeObjectURL(imageUrl);
+    }, [])
       
-
       const handleFollowClick = () => {
           const followUrl = isFollowing ?  `http://localhost:8000/user/remove-follower/${id}` : `http://localhost:8000/user/add-follow/${id}` 
           fetch(followUrl, 

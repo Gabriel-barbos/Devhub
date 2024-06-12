@@ -246,7 +246,7 @@ def unfollow(idFollower:str, current_user:str = Depends(UserController.get_curre
         return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro inesperado ao remover seguidor")
 
 
-@user_router.get("/user/analytics")
+@user_router.get("/analytics")
 def get_analytics(current_user: str = Depends(UserController.get_current_user)):
     liked_posts_count = UserController.get_liked_posts_count(ObjectId(current_user['_id']))
     followers_count = UserController.followers_count(ObjectId(current_user['_id']))
